@@ -78,16 +78,7 @@ class Solution:
 
 [剑指 Offer 48. 最长不含重复字符的子字符串](https://leetcode-cn.com/problems/zui-chang-bu-han-zhong-fu-zi-fu-de-zi-zi-fu-chuan-lcof/)
 
-长度为 NN 的字符串共有 $\frac{(1+N)N}{2}$ 个子字符串（复杂度为 O(N^2)O(N 
-2
- ) ），判断长度为 NN 的字符串是否有重复字符的复杂度为 O(N)O(N) ，因此本题使用暴力法解决的复杂度为 O(N^3)O(N 
-3
- ) 。考虑使用动态规划降低时间复杂度。
-
-作者：jyd
-链接：https://leetcode-cn.com/problems/zui-chang-bu-han-zhong-fu-zi-fu-de-zi-zi-fu-chuan-lcof/solution/mian-shi-ti-48-zui-chang-bu-han-zhong-fu-zi-fu-d-9/
-来源：力扣（LeetCode）
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+长度为 NN 的字符串共有 $\frac{(1+N)N}{2}$ 个子字符串（复杂度为 $O(N^2)$，判断长度为 NN 的字符串是否有重复字符的复杂度为 O(N)，因此本题使用暴力法解决的复杂度为 $O(N^3)$ .考虑使用动态规划降低时间复杂度。
 
 ```python
 class Solution:

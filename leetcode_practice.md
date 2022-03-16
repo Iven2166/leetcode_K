@@ -435,3 +435,161 @@ class Solution:
         # print(s1)
         return len(s1)
 ```
+
+## 第 15 天 搜索与回溯算法（中等）
+
+[剑指 Offer 34. 二叉树中和为某一值的路径](https://leetcode-cn.com/problems/er-cha-shu-zhong-he-wei-mou-yi-zhi-de-lu-jing-lcof/)
+
+给你二叉树的根节点 root 和一个整数目标和 targetSum ，找出所有 从根节点到叶子节点 路径总和等于给定目标和的路径。
+
+叶子节点 是指没有子节点的节点。
+
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def pathSum(self, root: TreeNode, target: int) -> List[List[int]]:
+        # 到了叶子结点，还没到target，返回false
+        total_ans = []
+        ans = []
+        def dfs(curr, k):
+            if not curr:
+                return 
+            ans.append(curr.val)
+            if not curr.left and not curr.right and k + curr.val == target:
+                total_ans.append(list(ans)) # 注意这里不能写ans，因为是引用，而ans最终是回撤清空的；不做浅层copy
+            dfs(curr.left, k + curr.val) 
+            dfs(curr.right, k + curr.val)
+            ans.pop()
+
+        dfs(root, 0)
+        return total_ans
+```
+
+- DFS写法
+```python
+ans, total_ans = [], []
+def dfs(root):
+    if not root:
+        return 
+    ans.append(root.val)
+    if not curr.left and not curr.right:
+        total_ans.append(list(ans))
+    dfs(root.left)
+    dfs(root.right)
+    ans.pop()
+```
+
+[剑指 Offer 36. 二叉搜索树与双向链表](https://leetcode-cn.com/problems/er-cha-sou-suo-shu-yu-shuang-xiang-lian-biao-lcof/)
+
+输入一棵二叉搜索树，将该二叉搜索树转换成一个排序的循环双向链表。要求不能创建任何新的节点，只能调整树中节点指针的指向。
+
+```python
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, val, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+"""
+class Solution:
+    def treeToDoublyList(self, root: 'Node') -> 'Node':
+        if not root:
+            return None
+        stack = list()
+        def dfs(curr):
+            if not curr:
+                return 
+            if curr.left:
+                dfs(curr.left)
+            stack.append(curr)
+            if curr.right:
+                dfs(curr.right)
+        dfs(root)
+
+        n = len(stack)
+        for i, j in enumerate(stack):
+            j.left = stack[(i + n - 1)%n]
+            j.right = stack[(i + n + 1)%n]
+        return stack[0]
+```
+
+[剑指 Offer 54. 二叉搜索树的第k大节点](https://leetcode-cn.com/problems/er-cha-sou-suo-shu-de-di-kda-jie-dian-lcof/)
+
+给定一棵二叉搜索树，请找出其中第 $k$ 大的节点的值。
+
+- 存储后进行判断
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def kthLargest(self, root: TreeNode, k: int) -> int:
+        if not root:
+            return None
+        stack = []
+        def dfs(curr):
+            if not curr:
+                return 
+            if curr.left:
+                dfs(curr.left)
+            stack.append(curr.val)
+            if curr.right:
+                dfs(curr.right)
+        
+        dfs(root)
+        return stack[-k]
+```
+
+- 提前判断退出 [参考题解1](https://leetcode-cn.com/problems/er-cha-sou-suo-shu-de-di-kda-jie-dian-lcof/solution/mian-shi-ti-54-er-cha-sou-suo-shu-de-di-k-da-jie-d/)
+
+复杂度分析：
+时间复杂度 O(N)： 当树退化为链表时（全部为右子节点），无论 k 的值大小，递归深度都为 N
+
+空间复杂度 O(N)： 当树退化为链表时（全部为右子节点），系统使用 O(N) 大小的栈空间。
+
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def kthLargest(self, root: TreeNode, k: int) -> int:
+        def dfs(curr):
+            if not curr:
+                return 
+            dfs(curr.right)
+            if self.k == 0:
+                return 
+            self.k -= 1
+            if self.k == 0:
+                self.res = curr.val 
+            dfs(curr.left)
+        
+        self.k = k 
+        dfs(root)
+        return self.res 
+```
+
+## 第 16 天 排序（简单）
+
+[剑指 Offer 45. 把数组排成最小的数](https://leetcode-cn.com/problems/ba-shu-zu-pai-cheng-zui-xiao-de-shu-lcof/)
+
+输入一个非负整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。
+
+

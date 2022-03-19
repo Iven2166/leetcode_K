@@ -667,7 +667,7 @@ def quick_sort(arr, l, r): # 快排
     - 比中位数大的部分 & 能够返回最小的一个：小顶堆
     - 比中位数小的部分 & 能够返回最大的一个：大顶堆（由于Python 中 heapq 模块是小顶堆。所以实现 大顶堆 方法： 小顶堆的插入和弹出操作均将元素 取反 即可。）
 
-![img_1.png](img_1.png)
+![img_1.png](img_1.png ){:height="10px" width="10px"}
 
 ```python
 from heapq import * 

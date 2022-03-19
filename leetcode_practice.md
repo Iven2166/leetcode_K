@@ -792,3 +792,93 @@ class Solution:
             return self.isBalanced(root.left) and self.isBalanced(root.right)
 ```
 
+## 第 19 天 搜索与回溯算法（中等）
+
+[剑指 Offer 64. 求1+2+…+n](https://leetcode-cn.com/problems/qiu-12n-lcof/)
+
+求 1+2+...+n ，要求不能使用乘除法、for、while、if、else、switch、case等关键字及条件判断语句（A?B:C）。
+
+
+
+[剑指 Offer 68 - I. 二叉搜索树的最近公共祖先](https://leetcode-cn.com/problems/er-cha-sou-suo-shu-de-zui-jin-gong-gong-zu-xian-lcof/)
+
+- 没有充分利用二叉搜索树性质的DFS：时间复杂度排名约10%
+
+先找两个节点的共同路径，然后再逆序寻找第一个出现的共同节点（足够深）
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        res = []
+        self.ans = []
+        def dfs(curr, k):
+            if curr:
+                res.append(curr)
+                if curr == k:
+                    self.ans = list(res)
+                dfs(curr.left, k)
+                dfs(curr.right, k)
+                res.pop()
+            
+        dfs(root, p)
+        ans1 = self.ans
+        self.ans = []
+        dfs(root, q)
+        ans2 = self.ans
+        # print(ans1, ans2)
+        for i in ans1[::-1]:
+            for j in ans2[::-1]:
+                if i == j:
+                    return i
+```
+
+- 考虑二叉搜索树性质的，在找路径时，需要判断根节点和需要寻找的节点大小关系：如果要找的节点小，那么在左子树，反之则在右子树
+
+时间复杂度：
+```python
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        def findPath(curr, k):
+            path = list()
+            while curr.val != k.val:
+                path.append(curr)
+                if k.val < curr.val:
+                    curr = curr.left 
+                else:
+                    curr = curr.right
+            path.append(k)
+            return path 
+        
+        path1, path2 = findPath(root, p), findPath(root, q)
+        for i in path1[::-1]:
+            for j in path2[::-1]:
+                if i == j:
+                    return i
+```
+
+- [参考：一次遍历](https://leetcode-cn.com/problems/er-cha-sou-suo-shu-de-zui-jin-gong-gong-zu-xian-lcof/solution/er-cha-sou-suo-shu-de-zui-jin-gong-gong-0wpw1/)
+
+把两个节点放在同一个判断力，一次遍历。如果都小，则都在左边；如果都大，那么都在右边；其他情况说明是分叉口。
+
+```python
+class Solution:
+    def lowestCommonAncestor(self, root: TreeNode, p: TreeNode, q: TreeNode) -> TreeNode:
+        ancestor = root
+        while True:
+            if p.val < ancestor.val and q.val < ancestor.val:
+                ancestor = ancestor.left
+            elif p.val > ancestor.val and q.val > ancestor.val:
+                ancestor = ancestor.right
+            else:
+                break
+        return ancestor
+```
+
+## 第 20 天 分治算法（中等）

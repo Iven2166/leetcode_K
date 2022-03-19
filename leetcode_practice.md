@@ -656,4 +656,44 @@ def quick_sort(arr, l, r): # 快排
     quick_sort(arr, i + 1, r)
 ```
 
+[剑指 Offer 41. 数据流中的中位数(困难)](https://leetcode-cn.com/problems/shu-ju-liu-zhong-de-zhong-wei-shu-lcof/)
+
+如何得到一个数据流中的中位数？如果从数据流中读出奇数个数值，那么中位数就是所有数值 *排序之后* 位于中间的数值。如果从数据流中读出偶数个数值，那么中位数就是所有数值排序之后中间两个数的平均值。
+
+- [参考](https://leetcode-cn.com/problems/shu-ju-liu-zhong-de-zhong-wei-shu-lcof/solution/mian-shi-ti-41-shu-ju-liu-zhong-de-zhong-wei-shu-y/)
+  
+  - 核心逻辑：实时地分割出来大的一半和小的一半，"分割线"为中位数：所以从大的部分里面找最小的，从小的部分找最大的，一取平均就是中位数。
+  - 实现
+    - 比中位数大的部分 & 能够返回最小的一个：小顶堆
+    - 比中位数小的部分 & 能够返回最大的一个：大顶堆（由于Python 中 heapq 模块是小顶堆。所以实现 大顶堆 方法： 小顶堆的插入和弹出操作均将元素 取反 即可。）
+
+![img_1.png](img_1.png)
+
+```python
+from heapq import * 
+
+class MedianFinder:
+    def __init__(self):
+        self.A = [] # 小顶堆，保存较大的一半
+        self.B = [] # 大顶堆，保存较小的一半
+
+    def addNum(self, num: int) -> None:
+        if len(self.A)!=len(self.B):
+            # heappush(self.A, num)
+            # heappush(self.B, -heappop(self.A))
+            heappush(self.B, -heappushpop(self.A, num)) # 代替两行更加简洁
+        else:
+            # heappush(self.B, -num)
+            # heappush(self.A, -heappop(self.B))
+            heappush(self.A, -heappushpop(self.B, -num)) # 更加简洁
+    
+    def findMedian(self) -> float:
+        return self.A[0] if len(self.A)!=len(self.B) else (self.A[0] - self.B[0]) / 2.0
+```
+
+## 第 18 天 搜索与回溯算法（中等）
+
+[剑指 Offer 55 - I. 二叉树的深度](https://leetcode-cn.com/problems/er-cha-shu-de-shen-du-lcof/)
+
+输入一棵二叉树的根节点，求该树的深度。从根节点到叶节点依次经过的节点（含根、叶节点）形成树的一条路径，最长路径的长度为树的深度。
 

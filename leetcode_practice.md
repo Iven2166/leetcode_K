@@ -666,8 +666,10 @@ def quick_sort(arr, l, r): # 快排
   - 实现
     - 比中位数大的部分 & 能够返回最小的一个：小顶堆
     - 比中位数小的部分 & 能够返回最大的一个：大顶堆（由于Python 中 heapq 模块是小顶堆。所以实现 大顶堆 方法： 小顶堆的插入和弹出操作均将元素 取反 即可。）
+  
 
-![img_1.png](img_1.png ){:height="10px" width="10px"}
+![img_1.png](img_1.png)
+
 
 ```python
 from heapq import * 
@@ -696,4 +698,97 @@ class MedianFinder:
 [剑指 Offer 55 - I. 二叉树的深度](https://leetcode-cn.com/problems/er-cha-shu-de-shen-du-lcof/)
 
 输入一棵二叉树的根节点，求该树的深度。从根节点到叶节点依次经过的节点（含根、叶节点）形成树的一条路径，最长路径的长度为树的深度。
+
+- 普通的递归 recursion
+
+```python
+class Solution:
+    def maxDepth(self, root: TreeNode) -> int:
+        if not root: return 0 
+        return max(self.maxDepth(root.left), self.maxDepth(root.right)) + 1
+```
+
+- DFS
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def maxDepth(self, root: TreeNode) -> int:
+        self.depth, self.depth_max = 0, 0
+        def dfs(curr):
+            # print(curr.val, self.depth)
+            if not curr:
+                return 
+            self.depth += 1
+            if not curr.left and not curr.right:
+                self.depth_max = max(self.depth_max, self.depth)
+                return 
+            dfs(curr.left)
+            if curr.left:
+                self.depth -= 1
+            dfs(curr.right)
+            if curr.right:
+                self.depth -= 1
+            
+        dfs(root)
+        return self.depth_max
+```
+
+- 层序遍历（BFS）:在时空上应该是最快的
+
+```python
+class Solution:
+    def maxDepth(self, root: TreeNode) -> int:
+        if not root: return 0 
+        queue, res = [root, ], 0
+        while queue:
+            tmp = []
+            for node in queue:
+                if node.left: tmp.append(node.left)
+                if node.right: tmp.append(node.right)
+            queue = tmp 
+            res += 1
+        return res
+```
+
+[剑指 Offer 55 - II. 平衡二叉树](https://leetcode-cn.com/problems/ping-heng-er-cha-shu-lcof/)
+
+输入一棵二叉树的根节点，判断该树是不是平衡二叉树。如果某二叉树中任意节点的左右子树的深度相差不超过1，那么它就是一棵平衡二叉树。
+
+- 时间复杂度：$O(n^2)$，其中 $n$ 是二叉树中的节点个数。
+最坏情况下，二叉树是满二叉树，需要遍历二叉树中的所有节点。
+对于节点 $p$，如果它的高度是 $d$，则 $cnt(p)$ 最多会被调用 $d$ 次
+  （即遍历到它的每一个祖先节点时）。对于平均的情况，一棵树的高度 $h$ 满足 $O(h)=O(log n)$，因为 $d \leq h$，所以总时间复杂度为 $O(n log n)$。
+  对于最坏的情况，二叉树形成链式结构，高度为 $O(n)$，此时总时间复杂度为 $O(n^2)$
+
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def isBalanced(self, root: TreeNode) -> bool:
+        def cnt(curr):
+            if not curr: 
+                return 0 
+            else:
+                return max(cnt(curr.left), cnt(curr.right)) + 1
+
+        if not root:
+            return True
+        if abs(cnt(root.left) - cnt(root.right)) >= 2:
+            return False
+        else:
+            return self.isBalanced(root.left) and self.isBalanced(root.right)
+```
 

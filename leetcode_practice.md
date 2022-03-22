@@ -885,6 +885,64 @@ class Solution:
 
 [剑指 Offer 07. 重建二叉树](https://leetcode-cn.com/problems/zhong-jian-er-cha-shu-lcof/)
 
+输入某二叉树的前序遍历和中序遍历的结果，请构建该二叉树并返回其根节点。
+
+- 逻辑：其实简单题，因为前序遍历（根，左，右）和中序遍历（左，根，右）是能够切分开来，问题即定位根节点
+- 复杂度：如果用列表的index方法，那么定位根节点需要$O(N)$
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+         
+class Solution:
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> TreeNode:
+        if not preorder and not inorder:
+            return None
+        if len(preorder)==len(inorder)==1:
+            return TreeNode(preorder[0])
+        mid = inorder.index(preorder[0])
+        curr = TreeNode(preorder[0])
+        curr.left = self.buildTree(
+          preorder[1: mid + 1], inorder[0: mid]
+        )
+        curr.right = self.buildTree(
+          preorder[mid + 1:], inorder[ mid + 1:]
+        )
+        return curr   
+```
+
+- 优化：用哈希表来优化查询速度(从 17% ——> 67%)
+
+```python
+class Solution:
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> TreeNode:
+        def helper(pre_pos, in_pos):
+            pre_left, pre_right = pre_pos
+            in_left, in_right = in_pos
+            if pre_left > pre_right:
+                return None
+            root = preorder[pre_left]
+            mid = inorder_index[root]
+            curr = TreeNode(root)
+            inorder_gap = mid - in_left
+            curr.left = helper(
+              (pre_left + 1, pre_left + inorder_gap), (in_left, mid - 1)
+            )
+            curr.right = helper(
+                (pre_left + inorder_gap + 1, pre_right), (mid + 1, in_right)
+            )
+            return curr 
+        
+        inorder_index = {element: i for i, element in enumerate(inorder)}
+        n = len(inorder)
+        return helper((0, n-1), (0, n-1))
+```
+
+
 [剑指 Offer 16. 数值的整数次方](https://leetcode-cn.com/problems/shu-zhi-de-zheng-shu-ci-fang-lcof/)
 
 [剑指 Offer 33. 二叉搜索树的后序遍历序列](https://leetcode-cn.com/problems/er-cha-sou-suo-shu-de-hou-xu-bian-li-xu-lie-lcof/)

@@ -945,7 +945,46 @@ class Solution:
 
 [剑指 Offer 16. 数值的整数次方](https://leetcode-cn.com/problems/shu-zhi-de-zheng-shu-ci-fang-lcof/)
 
+实现 pow(x, n) ，即计算 x 的 n 次幂函数。不得使用库函数，同时不需要考虑大数问题。
+
+[解答：快速幂](https://leetcode-cn.com/problems/shu-zhi-de-zheng-shu-ci-fang-lcof/solution/mian-shi-ti-16-shu-zhi-de-zheng-shu-ci-fang-kuai-s/)
+
+```python
+class Solution:
+    def myPow(self, x: float, n: int) -> float:
+        if x == 0: # 因为下方有 1/x
+            return x
+        if n < 0:
+            x, n = 1/x, - n
+        res = 1
+        while n:
+            if n & 1:
+                res *= x
+            x *= x 
+            n >>= 1
+        return res
+```
+
+
 [剑指 Offer 33. 二叉搜索树的后序遍历序列](https://leetcode-cn.com/problems/er-cha-sou-suo-shu-de-hou-xu-bian-li-xu-lie-lcof/)
+
+输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历结果。如果是则返回 true，否则返回 false。假设输入的数组的任意两个数字都互不相同。
+
+```python
+class Solution:
+    def verifyPostorder(self, postorder: List[int]) -> bool:
+        def helper(i, j):
+            if i >= j:
+                return True
+            pos = i
+            while postorder[pos] < postorder[j]:
+                pos += 1
+            mark = pos 
+            while postorder[pos] > postorder[j]:
+                pos += 1
+            return pos == j and helper(i, mark - 1) and helper(mark, j - 1)
+        return helper(0, len(postorder) - 1)
+```
 
 
 

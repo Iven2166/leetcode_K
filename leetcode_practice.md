@@ -986,5 +986,115 @@ class Solution:
         return helper(0, len(postorder) - 1)
 ```
 
+## 第 21 天 位运算（简单）
+
+[剑指 Offer 15. 二进制中1的个数](https://leetcode-cn.com/problems/er-jin-zhi-zhong-1de-ge-shu-lcof/)
+
+编写一个函数，输入是一个无符号整数（以二进制串的形式），返回其二进制表达式中数字位数为 '1' 的个数（也被称为 汉明重量).）。
+
+```python
+class Solution:
+    def hammingWeight(self, n: int) -> int:
+        cnt = 0
+        while n > 0:
+            cnt += n & 1
+            n >>= 1
+        return cnt 
+```
+
+
+[剑指 Offer 65. 不用加减乘除做加法](https://leetcode-cn.com/problems/bu-yong-jia-jian-cheng-chu-zuo-jia-fa-lcof/)
+
+写一个函数，求两个整数之和，要求在函数体内不得使用 “+”、“-”、“*”、“/” 四则运算符号。
+
+[参考](https://leetcode-cn.com/problems/bu-yong-jia-jian-cheng-chu-zuo-jia-fa-lcof/solution/mian-shi-ti-65-bu-yong-jia-jian-cheng-chu-zuo-ji-7/)
+
+```python
+class Solution:
+    def add(self, a: int, b: int) -> int:
+        x = 0xffffffff
+        a, b = a & x, b & x
+        while b != 0:
+            a, b = (a ^ b), (a & b) << 1 & x
+        return a if a <= 0x7fffffff else ~(a ^ x)
+```
+
+## 第 23 天 数学（简单）
+
+[剑指 Offer 39. 数组中出现次数超过一半的数字](https://leetcode-cn.com/problems/shu-zu-zhong-chu-xian-ci-shu-chao-guo-yi-ban-de-shu-zi-lcof/)
+
+数组中有一个数字出现的次数超过数组长度的一半，请找出这个数字。
+
+- 解法
+  - 哈希表
+  - 排序后找中间位置数字
+  - 摩尔投票法（符合空间复杂度 $O(1)$ ）[link](https://leetcode-cn.com/problems/shu-zu-zhong-chu-xian-ci-shu-chao-guo-yi-ban-de-shu-zi-lcof/solution/mian-shi-ti-39-shu-zu-zhong-chu-xian-ci-shu-chao-3/)
+
+```python
+class Solution:
+    def majorityElement(self, nums: List[int]) -> int:
+        votes = 0
+        for num in nums:
+            if votes == 0:
+                x = num 
+            votes += 1 if num == x else -1 
+        return x
+```
+
+[剑指 Offer 66. 构建乘积数组](https://leetcode-cn.com/problems/gou-jian-cheng-ji-shu-zu-lcof/)
+
+给定一个数组 A[0,1,…,n-1]，请构建一个数组 B[0,1,…,n-1]，其中 B[i] 的值是数组 A 中除了下标 i 以外的元素的积, 即 B[i]=A[0]×A[1]×…×A[i-1]×A[i+1]×…×A[n-1]。不能使用除法。
+
+
+- 循规蹈矩的解法，判断每个位置的两端的乘积
+
+```python
+class Solution:
+    def constructArr(self, a: List[int]) -> List[int]:
+        c, d = list(a), list(a) 
+        for i in range(1, len(c)):
+            c[i] = c[i-1] * c[i]
+        for i in range(len(d)-2, -1, -1):
+            d[i] = d[i+1] * d[i]
+        ans = [0 for _ in range(len(a))]
+        for i in range(len(ans)):
+            if i == 0:
+                ans[i] = d[1]
+            elif i == len(ans)-1:
+                ans[i] = c[len(ans)-2]
+            else:
+                ans[i] = c[i-1] * d[i+1]   
+        return ans 
+```
+- 优化空间复杂度: [图解：上下三角](https://leetcode-cn.com/problems/gou-jian-cheng-ji-shu-zu-lcof/solution/mian-shi-ti-66-gou-jian-cheng-ji-shu-zu-biao-ge-fe/)
+
+```python
+class Solution:
+    def constructArr(self, a: List[int]) -> List[int]:
+        b, tmp = [1] * len(a), 1
+        for i in range(1, len(a)):
+            b[i] = b[i-1] * a[i-1]
+        for i in range(len(a) - 2, -1, -1):
+            tmp *= a[i + 1]
+            b[i] *= tmp 
+        return b 
+```
+
+## 第 24 天 数学（中等）
+
+[剑指 Offer 14- I. 剪绳子](https://leetcode-cn.com/problems/jian-sheng-zi-lcof/)
+
+
+[剑指 Offer 14- II. 剪绳子 II](https://leetcode-cn.com/problems/jian-sheng-zi-ii-lcof/)
+
+
+[剑指 Offer 57 - II. 和为s的连续正数序列](https://leetcode-cn.com/problems/he-wei-sde-lian-xu-zheng-shu-xu-lie-lcof/)
+
+
+[剑指 Offer 62. 圆圈中最后剩下的数字](https://leetcode-cn.com/problems/yuan-quan-zhong-zui-hou-sheng-xia-de-shu-zi-lcof/)
+
+
+
+
 
 

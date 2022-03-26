@@ -1084,17 +1084,58 @@ class Solution:
 
 [剑指 Offer 14- I. 剪绳子](https://leetcode-cn.com/problems/jian-sheng-zi-lcof/)
 
+给你一根长度为 n 的绳子，请把绳子剪成整数长度的 m 段（m、n都是整数，n>1并且m>1），每段绳子的长度记为 k[0],k[1]...k[m-1] 。请问 k[0]*k[1]*...*k[m-1] 可能的最大乘积是多少？例如，当绳子的长度是8时，我们把它剪成长度分别为2、3、3的三段，此时得到的最大乘积是18。
+
+```python
+class Solution:
+    def cuttingRope(self, n: int) -> int:
+        if n <= 3: 
+            return n - 1
+        a, b = n // 3, n % 3
+        if b == 0:
+            return int(math.pow(3, a))
+        elif b == 1:
+            return int(math.pow(3, a - 1) * 4)
+        else:
+            return int(math.pow(3, a) * 2)
+```
+
+- 解答：
+  - 注：Python 中常见有三种幂计算函数： * 和 pow() 的时间复杂度均为 O(\log a)；而 math.pow() 始终调用 C 库的 pow() 函数，其执行浮点取幂，时间复杂度为 O(1)。
+  - 应该尽可能地瓜分为长度为3的分段[数学推导](https://leetcode-cn.com/problems/jian-sheng-zi-lcof/solution/mian-shi-ti-14-i-jian-sheng-zi-tan-xin-si-xiang-by/)
 
 [剑指 Offer 14- II. 剪绳子 II](https://leetcode-cn.com/problems/jian-sheng-zi-ii-lcof/)
 
-
+- [解法参考](https://leetcode-cn.com/problems/jian-sheng-zi-ii-lcof/solution/mian-shi-ti-14-ii-jian-sheng-zi-iitan-xin-er-fen-f/)
+  - 循环求余
+  - 快速幂求余
+  
+  
 [剑指 Offer 57 - II. 和为s的连续正数序列](https://leetcode-cn.com/problems/he-wei-sde-lian-xu-zheng-shu-xu-lie-lcof/)
+
+输入一个正整数 target ，输出所有和为 target 的连续正整数序列（至少含有两个数）。
+
+序列内的数字由小到大排列，不同序列按照首个数字从小到大排列。
+
+- 利用求和公式
+    - 举一反三：如果不是连续正整数序列，而是间隔2如何处理？——实际上就是修改求和公式，再更新公式
+  
+```python
+class Solution:
+    def findContinuousSequence(self, target: int):
+        i, j, res = 1, 2, []
+        while i < j:
+            j = (-1 + (1 + 4 * (2 * target + i * i - i)) ** 0.5) / 2
+            if i < j and j == int(j):
+                res.append(list(range(i, int(j) + 1)))
+            i += 1
+        return res
+```
 
 
 [剑指 Offer 62. 圆圈中最后剩下的数字](https://leetcode-cn.com/problems/yuan-quan-zhong-zui-hou-sheng-xia-de-shu-zi-lcof/)
 
-
-
+- [约瑟夫环：加强理解](https://leetcode-cn.com/problems/yuan-quan-zhong-zui-hou-sheng-xia-de-shu-zi-lcof/solution/jian-zhi-offer-62-yuan-quan-zhong-zui-ho-dcow/)
 
 
 

@@ -1205,3 +1205,76 @@ class Solution:
 
 ## 第 27 天 栈与队列（困难）
 
+[剑指 Offer 59 - I. 滑动窗口的最大值](https://leetcode-cn.com/problems/hua-dong-chuang-kou-de-zui-da-zhi-lcof/)
+
+```python
+from heapq import *
+class Solution:
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        if not nums:
+            return []
+        # 维护一个小顶堆，存储当前值以及位置，记录当前的窗口范围，结合判断值是否在窗口里以及是否最大。
+        ans = []
+        curr = []
+        i = 0
+        n = len(nums)
+        while i + k - 1 <= n - 1:
+            if i == 0: # 初始化
+                for pos, j in enumerate(nums[0:i+k]):
+                    heappush(curr, (-j, pos))
+            else:
+                heappush(curr, (- nums[i + k - 1], i + k - 1))
+            while True:
+                val, pos = curr[0]
+                val *= -1
+                if pos >= i and pos <= i + k - 1:
+                    ans.append(val)
+                    break
+                else:
+                    heappop(curr)
+            i += 1
+        return ans
+```
+
+[剑指 Offer 59 - II. 队列的最大值](https://leetcode-cn.com/problems/dui-lie-de-zui-da-zhi-lcof/)
+
+- 参考题解[双向队列，重点在于递减序列的维护](https://leetcode-cn.com/problems/dui-lie-de-zui-da-zhi-lcof/solution/jian-zhi-offer-59-ii-dui-lie-de-zui-da-z-0pap/)
+
+```python
+import queue
+class MaxQueue:
+
+    def __init__(self):
+        self.q = queue.Queue()
+        self.stack_max = queue.deque()
+
+    def max_value(self) -> int:
+        return self.stack_max[0] if self.stack_max else -1
+
+    def push_back(self, value: int) -> None:
+        self.q.put(value)
+        while self.stack_max and self.stack_max[-1] < value:
+            self.stack_max.pop()
+        self.stack_max.append(value)
+        return None
+
+    def pop_front(self) -> int:
+        if self.q.empty(): 
+            return -1
+        p = self.q.get()
+        if self.stack_max[0] == p:
+            self.stack_max.popleft()
+        return p
+
+
+# Your MaxQueue object will be instantiated and called as such:
+# obj = MaxQueue()
+# param_1 = obj.max_value()
+# obj.push_back(value)
+# param_3 = obj.pop_front()
+```
+
+## 第 28 天 搜索与回溯算法（困难）
+
+
+

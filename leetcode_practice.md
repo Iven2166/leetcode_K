@@ -126,6 +126,7 @@ class Solution:
         while head.next is not None:
             if head.next.val == val:
                 head.next = head.next.next 
+                break
             else:
                 head = head.next 
         return pre
@@ -1276,5 +1277,71 @@ class MaxQueue:
 
 ## 第 28 天 搜索与回溯算法（困难）
 
+[剑指 Offer 37. 序列化二叉树](https://leetcode-cn.com/problems/xu-lie-hua-er-cha-shu-lcof/)
+
+请实现两个函数，分别用来序列化和反序列化二叉树。
+
+你需要设计一个算法来实现二叉树的序列化与反序列化。这里不限定你的序列 / 反序列化算法执行逻辑，你只需要保证一个二叉树可以被序列化为一个字符串并且将这个字符串反序列化为原始的树结构。
+
+```python
+import collections
+class Codec:
+    def serialize(self, root):
+        if not root: return "[]"
+        res = []
+        queue = collections.deque()
+        queue.append(root)
+        while queue:
+            curr = queue.popleft()
+            if curr:
+                res.append(str(curr.val))
+                queue.append(curr.left)
+                queue.append(curr.right)
+            else:
+                res.append("null")  
+        return '[' + ','.join(res) + ']'
+    
+    def deserialize(self, data):
+        if data=="[]": return 
+        vals = data[1:-1].split(',')
+        i = 1
+        queue = collections.deque()
+        root = TreeNode(int(vals[0]))
+        queue.append(root)
+        while queue:
+            curr = queue.popleft()
+            if vals[i]!="null":
+                curr.left = TreeNode(int(vals[i]))
+                queue.append(curr.left)
+            i += 1
+            if vals[i]!="null":
+                curr.right = TreeNode(int(vals[i]))
+                queue.append(curr.right)
+            i += 1
+        return root
+```
 
 
+[剑指 Offer 38. 字符串的排列](https://leetcode-cn.com/problems/zi-fu-chuan-de-pai-lie-lcof/)
+
+- [参考](https://leetcode-cn.com/problems/zi-fu-chuan-de-pai-lie-lcof/solution/mian-shi-ti-38-zi-fu-chuan-de-pai-lie-hui-su-fa-by/)
+
+```python
+class Solution:
+    def permutation(self, s: str) -> List[str]:
+        c, res = list(s), []
+        def dfs(x):
+            if x == len(c) - 1:
+                res.append(''.join(c))   # 添加排列方案
+                return
+            dic = set()
+            for i in range(x, len(c)):
+                if c[i] in dic: continue # 重复，因此剪枝
+                dic.add(c[i])
+                c[i], c[x] = c[x], c[i]  # 交换，将 c[i] 固定在第 x 位
+                dfs(x + 1)               # 开启固定第 x + 1 位字符
+                c[i], c[x] = c[x], c[i]  # 恢复交换
+        dfs(0)
+        return res
+
+```

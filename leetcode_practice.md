@@ -1377,7 +1377,58 @@ class Solution:
 
 [剑指 Offer 49. 丑数](https://leetcode-cn.com/problems/chou-shu-lcof/)
 
+我们把只包含质因子 2、3 和 5 的数称作丑数（Ugly Number）。求按从小到大的顺序的第 n 个丑数。
+
+- 小顶堆，暴力解法，时间复杂度高（因为往后进行了多余的计算)
 ```python
 
 ```
+
+- [维护三个指针，分别对应*2，*3，*5的最小值，避免往后多余的计算](https://leetcode-cn.com/problems/chou-shu-lcof/solution/mian-shi-ti-49-chou-shu-dong-tai-gui-hua-qing-xi-t/)
+```python
+class Solution:
+    def nthUglyNumber(self, n: int) -> int:
+        dp, a, b, c = [1] * n, 0, 0, 0
+        for i in range(1, n):
+            n2, n3, n5 = dp[a]*2, dp[b]*3, dp[c]*5
+            dp[i] = min(n2, n3, n5)
+            if dp[i] == n2: a += 1
+            if dp[i] == n3: b += 1
+            if dp[i] == n5: c += 1
+        return dp[-1]
+```
+
+
+[剑指 Offer 60. n个骰子的点数](https://leetcode-cn.com/problems/nge-tou-zi-de-dian-shu-lcof/)
+
+把n个骰子扔在地上，所有骰子朝上一面的点数之和为s。输入n，打印出s的所有可能的值出现的概率。
+
+```python
+class Solution:
+    def dicesProbability(self, n: int) -> List[float]:
+        dp = [list() for _ in range(n)]
+        for i in range(6):
+            dp[0].append(1)
+        if n == 1:
+            return [i/6 for i in dp[0]]
+        for i in range(1, n):
+            dp[i] = [0] * 6 * (i + 1)
+            dp[i][i] = 1
+            j = i + 1
+            while j < len(dp[i]):
+                for m in range(max(j-6,0), min(j,len(dp[i-1]))):
+                    dp[i][j] += dp[i-1][m]
+                j += 1
+        dp_i = dp[-1]
+        dp_sum = sum(dp[-1])
+        res = []
+        for i in dp_i:
+            if i != 0:
+                res.append(i/dp_sum)
+        return res
+```
+
+## 第 30 天 分治算法（困难）
+
+
 

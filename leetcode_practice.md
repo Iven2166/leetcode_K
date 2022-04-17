@@ -1430,5 +1430,108 @@ class Solution:
 
 ## 第 30 天 分治算法（困难）
 
+[剑指 Offer 17. 打印从1到最大的n位数](https://leetcode-cn.com/problems/da-yin-cong-1dao-zui-da-de-nwei-shu-lcof/)
+
+输入数字 n，按顺序打印出从 1 到最大的 n 位十进制数。比如输入 3，则打印出 1、2、3 一直到最大的 3 位数 999。
+
+```python
+class Solution:
+    def printNumbers(self, n: int) -> List[int]:
+        return [i for i in range(1,10**n)]
+```
+
+- [参考-dfs](https://leetcode-cn.com/problems/da-yin-cong-1dao-zui-da-de-nwei-shu-lcof/solution/mian-shi-ti-17-da-yin-cong-1-dao-zui-da-de-n-wei-2/)
+```python
+class Solution:
+    def printNumbers(self, n: int) -> [int]:
+        def dfs(x):
+            if x == n: # 终止条件：已固定完所有位
+                res.append(''.join(num)) # 拼接 num 并添加至 res 尾部
+                return
+            for i in range(10): # 遍历 0 - 9
+                num[x] = str(i) # 固定第 x 位为 i
+                dfs(x + 1) # 开启固定第 x + 1 位
+        
+        num = ['0'] * n # 起始数字定义为 n 个 0 组成的字符列表
+        res = [] # 数字字符串列表
+        dfs(0) # 开启全排列递归
+        return ','.join(res)  # 拼接所有数字字符串，使用逗号隔开，并返回
+```
+
+[剑指 Offer 51. 数组中的逆序对](https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/)
+
+在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组，求出这个数组中的逆序对的总数。
+
+- 连结知识点：归并排序，在排序的同时，也会累积逆序的比较
+- 时间复杂度 $O(N \log N)$： 其中 $N$ 为数组长度；归并排序使用 $O(N \log N)$ 时间
+- [参考](https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/solution/jian-zhi-offer-51-shu-zu-zhong-de-ni-xu-pvn2h/)
+
+```python
+class Solution:
+    def reversePairs(self, nums: List[int]) -> int:
+        def merge_sort(l, r):
+            if l >= r: return 0 # 说明到最里层
+            m = (l + r) // 2
+            res = merge_sort(l, m) + merge_sort(m + 1, r)
+            i, j = l, m + 1
+            tmp[l: r + 1] = nums[l: r + 1]
+            for k in range(l, r + 1):
+                if i == m + 1:
+                    nums[k] = tmp[j]
+                    j += 1
+                elif j == r + 1 or tmp[i] <= tmp[j]:
+                    nums[k] = tmp[i]
+                    i += 1
+                else:
+                    nums[k] = tmp[j]
+                    j += 1
+                    res += m - i + 1 # 因为左边已经排好序，所以tmp[i] > tmp[j] 时，tmp[i]之后的数都满足 tmp[x] > tmp[j], where x > i 
+            return res 
+        
+        tmp = [0] * len(nums)
+        return merge_sort(0, len(nums) - 1) 
+```
+
+## 第 31 天 数学（困难）
+
+[剑指 Offer 14- II. 剪绳子 II](https://leetcode-cn.com/problems/jian-sheng-zi-ii-lcof/)
+
+```python
+class Solution:
+    def cuttingRope(self, n: int) -> int:
+        if n == 2: return 1
+        if n == 3: return 2
+        if n % 3 == 0:
+            return 3 ** (n // 3) % 1000000007
+        if n % 3 == 1:
+            return 3 ** (n // 3 - 1) * 4 % 1000000007
+        if n % 3 == 2:
+            return 3 ** (n // 3) * 2 % 1000000007
+```
+
+[剑指 Offer 43. 1～n 整数中 1 出现的次数](https://leetcode-cn.com/problems/1nzheng-shu-zhong-1chu-xian-de-ci-shu-lcof/)
+
+输入一个整数 n ，求1～n这n个整数的十进制表示中1出现的次数。
+
+例如，输入12，1～12这些整数中包含1 的数字有1、10、11和12，1一共出现了5次。
+
+
+```python
+class Solution:
+    def countDigitOne(self, n: int) -> int:
+        digit, res = 1, 0
+        high, cur, low = n // 10, n % 10, 0
+        while high != 0 or cur != 0:
+            if cur == 0: res += high * digit
+            elif cur == 1: res += high * digit + low + 1
+            else: res += (high + 1) * digit
+            low += cur * digit
+            cur = high % 10
+            high //= 10
+            digit *= 10
+        return res
+```
+
+
 
 

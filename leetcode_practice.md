@@ -1549,3 +1549,63 @@ class Solution:
         return int(str(num)[(n - 1) % digit]) # 3.
 ```
 
+# 剑指 Offer 专项突击版
+
+## 第 1 天 整数
+
+## 第 2 天 整数
+
+## 第 3 天 数组
+
+[剑指 Offer II 007. 数组中和为 0 的三个数](https://leetcode-cn.com/problems/1fGaJU/)
+
+给定一个包含 n 个整数的数组nums，判断nums中是否存在三个元素a ，b ，c ，使得a + b + c = 0 ？请找出所有和为 0 且不重复的三元组。
+
+```python
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        n = len(nums)
+        nums.sort()
+        ans = list()
+        
+        for first in range(n):
+            if first > 0 and nums[first] == nums[first - 1]:
+                continue
+            third = n - 1
+            target = - nums[first]
+            for second in range(first + 1, n):
+                if second > first + 1 and nums[second] == nums[second - 1]:
+                    continue
+                while second < third and nums[second] + nums[third] > target:
+                    third -= 1
+                # 如果second和third指针重合，second再往右不会有符合条件的不重复组合
+                if second == third:
+                    break 
+                if nums[second] + nums[third] == target: # 要写在退出条件之后，不然会加入second == third 的组合情况
+                    ans.append([nums[first], nums[second], nums[third]])
+        return ans 
+```
+
+[剑指 Offer II 008. 和大于等于 target 的最短子数组](https://leetcode-cn.com/problems/2VG8Kg/)
+
+```python
+class Solution:
+    def minSubArrayLen(self, s: int, nums: List[int]) -> int:
+        if not nums:
+            return 0
+        
+        n = len(nums)
+        ans = n + 1
+        sums = [0]
+        for i in range(n):
+            sums.append(sums[-1] + nums[i])
+        
+        for i in range(1, n + 1):
+            target = s + sums[i - 1]
+            print(target)
+            bound = bisect.bisect_left(sums, target)
+            if bound != len(sums):
+                ans = min(ans, bound - (i - 1))
+        
+        return 0 if ans == n + 1 else ans
+```

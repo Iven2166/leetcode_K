@@ -1639,6 +1639,7 @@ class Solution:
 [参考2](https://leetcode-cn.com/problems/QTMn0o/solution/pythonqian-zhui-he-by-zhsama-8lbz/)
 
 ```python
+# 因为是仅看个数，所以记录某个前缀和出现的次数即可（因为中途可能有负数或者0）
 class Solution:
     def subarraySum(self, nums: List[int], k: int) -> int:
         count, pre = 0, 0

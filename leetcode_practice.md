@@ -1609,3 +1609,47 @@ class Solution:
         
         return 0 if ans == n + 1 else ans
 ```
+
+[剑指 Offer II 009. 乘积小于 K 的子数组](https://leetcode-cn.com/problems/ZVAVXX/)
+
+给定一个正整数数组 nums和整数 k ，请找出该数组内乘积小于 k 的连续的子数组的个数。
+
+```python
+class Solution:
+    def numSubarrayProductLessThanK(self, nums, k):
+        left = ans = 0
+        total = 1
+        for right, num in enumerate(nums):
+            total *= num 
+            while left <= right and total > k:
+                total //= nums[left]
+                left += 1
+            if left <= right:
+                ans += right - left + 1
+        return ans 
+```
+
+## 第 4 天 数组
+
+[剑指 Offer II 010. 和为 k 的子数组](https://leetcode-cn.com/problems/QTMn0o/)
+
+给定一个整数数组和一个整数 k ，请找到该数组中和为 k 的连续子数组的个数。
+
+[参考1](https://leetcode-cn.com/problems/QTMn0o/solution/he-wei-k-de-zi-shu-zu-by-leetcode-soluti-1169/) / 
+[参考2](https://leetcode-cn.com/problems/QTMn0o/solution/pythonqian-zhui-he-by-zhsama-8lbz/)
+
+```python
+class Solution:
+    def subarraySum(self, nums: List[int], k: int) -> int:
+        count, pre = 0, 0
+        d = dict()
+        d[0] = 1
+        for i in range(len(nums)):
+            pre += nums[i] # 因为是从前往后遍历，无需list，只需常量存储
+            if pre - k in d.keys():
+                count += d[pre - k]
+            d[pre] = d.get(pre, 0) + 1
+        return count
+        
+```
+

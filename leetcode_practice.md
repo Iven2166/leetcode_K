@@ -1654,3 +1654,70 @@ class Solution:
         
 ```
 
+[剑指 Offer II 011. 0 和 1 个数相同的子数组](https://leetcode-cn.com/problems/A1NYOS/)
+
+给定一个二进制数组 nums , 找到含有相同数量的 0 和 1 的最长连续子数组，并返回该子数组的长度。
+
+
+```python
+class Solution:
+    def findMaxLength(self, nums: List[int]) -> int:
+        count = 0 # 累计的前缀和
+        max_len = 0
+        d = dict()
+        n = len(nums)
+        d[count] = -1 # 开始之前的前缀和为0
+        for i in range(n):
+            num = nums[i]
+            if num == 1:
+                count += 1
+            else:
+                count -= 1
+            if count in d.keys():
+                prev_index = d[count]
+                max_len = max(max_len, i - prev_index)
+            else:
+                d[count] = i
+            # [0,1,0,1,...] -> [(0),-1,0,-1,0] : d[0] = -1 且不再更新, 到了i=3则 3-(-1)=4
+        return max_len
+
+```
+
+[剑指 Offer II 012. 左右两边子数组的和相等](https://leetcode-cn.com/problems/tvdfij/)
+
+```python
+class Solution:
+    def pivotIndex(self, nums: List[int]) -> int:
+        pre_sum, n, total = 0, len(nums), sum(nums)
+        for i in range(n):
+            if pre_sum == total - nums[i] - pre_sum:
+                return i 
+            pre_sum += nums[i]
+        return -1
+```
+
+[剑指 Offer II 013. 二维子矩阵的和](https://leetcode-cn.com/problems/O4NDxx/)
+
+```python
+class NumMatrix:
+
+    def __init__(self, matrix: List[List[int]]):
+        self.m = matrix
+        self.r, self.c = len(self.m), len(self.m[0])
+        self.dp = [[0 for _ in range(self.c+1)] for _ in range(self.r+1)]
+        self.dp[1][1] = self.m[0][0]
+        for i in range(2, self.r+1):
+            self.dp[i][1] = self.dp[i-1][1] + self.m[i-1][0]
+        for j in range(2, self.c+1):
+            self.dp[1][j] = self.dp[1][j-1] + self.m[0][j-1]
+        for i in range(2, self.r+1):
+            for j in range(2, self.c+1):
+                self.dp[i][j] += self.dp[i-1][j] + sum(self.m[i-1][0:j])
+
+    def sumRegion(self, row1: int, col1: int, row2: int, col2: int) -> int:
+        return self.dp[row2+1][col2+1] - self.dp[row2+1][col1] - self.dp[row1][col2+1] + self.dp[row1][col1]
+
+# Your NumMatrix object will be instantiated and called as such:
+# obj = NumMatrix(matrix)
+# param_1 = obj.sumRegion(row1,col1,row2,col2)
+```

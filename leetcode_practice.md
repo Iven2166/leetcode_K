@@ -1721,3 +1721,98 @@ class NumMatrix:
 # obj = NumMatrix(matrix)
 # param_1 = obj.sumRegion(row1,col1,row2,col2)
 ```
+
+## 第 5 天 字符串
+
+[剑指 Offer II 014. 字符串中的变位词](https://leetcode-cn.com/problems/MPnaiL/)
+
+给定两个字符串 s1 和 s2，写一个函数来判断 s2 是否包含 s1 的某个变位词。
+
+换句话说，第一个字符串的排列之一是第二个字符串的 子串 。
+
+```python
+import collections
+class Solution:
+    def checkInclusion(self, s1: str, s2: str) -> bool:
+        # 抽象：在s2里的连续子串，含有的字符及对应个数（counter）和s1相同
+        # (1) 暴力版本
+        if len(s1)>len(s2):
+            return False
+        n1, n2 = len(s1), len(s2)
+        # d1 = collections.Counter(s1)
+        # for i, single in enumerate(s2):
+        #     if single in d1.keys() and i+n1-1<len(s2):
+        #         d2 = collections.Counter(s2[i: i+n1])
+        #         print(d1, d2)
+        #         if d2==d1:
+        #             return True
+        # return False
+        # (2) 维护一个dict的版本，加减窗口里字符的个数
+        d1 = collections.Counter(s1)
+        if d1 == collections.Counter(s2[0:n1]):
+            return True 
+        for i in range(0, n1):
+            if s2[i] in d1.keys():
+                d1[s2[i]] -= 1
+        for i in range(1, n2 - n1+1):
+            if s2[i-1] in d1.keys():
+                d1[s2[i-1]] += 1
+            if s2[i+n1-1] in d1.keys():
+                d1[s2[i+n1-1]] -= 1
+            if set(s1) == set(s2[i:i+n1]) and set(d1.values())=={0}:
+                return True 
+        return False
+```
+
+[剑指 Offer II 015. 字符串中的所有变位词](https://leetcode-cn.com/problems/VabMRr/)
+
+给定两个字符串 s 和 p，找到 s 中所有 p 的 变位词 的子串，返回这些子串的起始索引。不考虑答案输出的顺序。
+
+变位词 指字母相同，但排列不同的字符串。
+
+```python
+class Solution:
+    def findAnagrams(self, s: str, p: str) -> List[int]:
+        if len(s)<len(p):
+            return []
+        ans = list()
+        n1, n2 = len(p), len(s)
+        d1 = collections.Counter(p)
+        if d1 == collections.Counter(s[0:n1]):
+            ans.append(0)
+        print(d1)
+        for i in range(0, n1):
+            if s[i] in d1.keys():
+                d1[s[i]] -= 1
+        for i in range(1, n2 - n1+1):
+            if s[i-1] in d1.keys():
+                d1[s[i-1]] += 1
+            if s[i+n1-1] in d1.keys():
+                d1[s[i+n1-1]] -= 1
+            if set(p) == set(s[i:i+n1]) and set(d1.values())=={0}:
+                ans.append(i)
+        return ans
+```
+
+[剑指 Offer II 016. 不含重复字符的最长子字符串](https://leetcode-cn.com/problems/wtcaE1/)
+
+给定一个字符串 s ，请你找出其中不含有重复字符的 最长连续子字符串 的长度。
+
+```python
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        # 双指针
+        if len(s) <= 1: return len(s)
+        if len(s)==2: return len(set(s))
+        max_len = 1
+        n = len(s)
+        left, right = 0, 1
+        while left < n - max_len:
+            if s[right] in s[left: right]:
+                left += 1     
+            else:
+                right += 1
+            max_len = max(max_len, right - left)
+        return max_len
+```
+

@@ -1816,3 +1816,39 @@ class Solution:
         return max_len
 ```
 
+## 第 6 天 字符串
+
+[剑指 Offer II 017. 含有所有字符的最短字符串](https://leetcode-cn.com/problems/M1oyTv/)
+
+给定两个字符串 s 和t 。返回 s 中包含 t 的所有字符的最短子字符串。如果 s 中不存在符合条件的子字符串，则返回空字符串 "" 。
+
+如果 s 中存在多个符合条件的子字符串，返回任意一个。
+
+
+[剑指 Offer II 018. 有效的回文](https://leetcode-cn.com/problems/XltzEq/)
+
+给定一个字符串 s ，验证 s 是否是 回文串 ，只考虑字母和数字字符，可以忽略字母的大小写。
+
+本题中，将空字符串定义为有效的 回文串。
+
+
+[剑指 Offer II 019. 最多删除一个字符得到回文](https://leetcode-cn.com/problems/RQku0D/)
+
+给定一个非空字符串 s，请判断如果 最多 从字符串中删除一个字符能否得到一个回文字符串。
+
+
+
+
+[剑指 Offer II 020. 回文子字符串的个数](https://leetcode-cn.com/problems/a7VOhD/)
+
+给定一个字符串 s ，请计算这个字符串中有多少个回文子字符串。
+
+具有不同开始位置或结束位置的子串，即使是由相同的字符组成，也会被视作不同的子串。
+
+
+
+
+
+
+
+

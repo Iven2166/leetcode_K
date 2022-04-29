@@ -1824,6 +1824,37 @@ class Solution:
 
 如果 s 中存在多个符合条件的子字符串，返回任意一个。
 
+- [参考](https://leetcode-cn.com/problems/M1oyTv/solution/python-shuang-zhi-zhen-ha-xi-biao-by-lau-xpyf/)
+
+```python
+class Solution:
+    def minWindow(self, s: str, t: str) -> str:
+        if len(t) > len(s):
+            return ""
+        n_s, n_t = len(s), len(t)
+        count = n_t # 记录达到的状态，=0时则满足
+        ans = "" # return 答案
+        d = Counter(t)
+        tmp_len = n_s + 1
+        left, right = 0, 0
+        while right < n_s:
+            # 1. 判断（右移后）最新一位的状态更新 2. 如果满足状态，更新ans，并且开始右移left-index 3. 判断left-index的右移后的状态改变
+            if s[right] in d:
+                if d[s[right]] > 0: 
+                    count -= 1 # 只当t还有字符需要抵扣时才计算count
+                d[s[right]] -= 1 # 即便是小于0也应该计算
+            while count == 0: # 如果一直满足状态，说明left-index还需要右移，因为右边的字符串一直能满足条件
+                if right - left + 1 < tmp_len:
+                    tmp_len = right - left + 1
+                    ans = s[left: right + 1]
+                if s[left] in d:
+                    if d[s[left]] == 0: # 刚好在加后大于0，说明出现实际缺补，才需要变动count
+                        count += 1
+                    d[s[left]] += 1
+                left += 1
+            right += 1
+        return ans
+```
 
 [剑指 Offer II 018. 有效的回文](https://leetcode-cn.com/problems/XltzEq/)
 
@@ -1831,12 +1862,36 @@ class Solution:
 
 本题中，将空字符串定义为有效的 回文串。
 
+```python
+class Solution:
+    def isPalindrome(self, s: str) -> bool:
+        t = ''.join([i.lower() for i in s if i.isnumeric() or i.isalpha()])
+        return True if t == t[::-1] else False
+```
 
 [剑指 Offer II 019. 最多删除一个字符得到回文](https://leetcode-cn.com/problems/RQku0D/)
 
 给定一个非空字符串 s，请判断如果 最多 从字符串中删除一个字符能否得到一个回文字符串。
 
-
+```python
+class Solution:
+    def validPalindrome(self, s: str) -> bool:
+        # 双指针：（1）s[left]==s[right]：Y则left+=1，right-=1 N则判断s[left: right] 或者 s[left+1:right+1]是否符合回文（单字符也是回文）
+        if s == s[::-1]:
+            return True
+        left, right = 0, len(s) - 1
+        flag = True
+        while left < right:
+            if s[left] == s[right]:
+                left += 1
+                right -= 1
+            else:
+                if s[left: right: -1] == s[left: right] or s[left + 1: right + 1: -1] == s[left + 1: right + 1]:
+                    return True
+                else:
+                    return False
+        return True
+```
 
 
 [剑指 Offer II 020. 回文子字符串的个数](https://leetcode-cn.com/problems/a7VOhD/)

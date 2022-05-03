@@ -641,7 +641,7 @@ class Solution:
 输入整数数组 arr ，找出其中最小的 k 个数。例如，输入4、5、1、6、2、7、3、8这8个数字，则最小的4个数字是1、2、3、4。
 
 
-- 快排
+- 快排( [图解](https://blog.csdn.net/Adusts/article/details/80882649?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522165159282216782395360412%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=165159282216782395360412&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-80882649.142^v9^pc_search_result_control_group,157^v4^control&utm_term=%E5%BF%AB%E6%8E%92&spm=1018.2226.3001.4187) )
 
 ```python
 def quick_sort(arr, l, r): # 快排
@@ -650,7 +650,7 @@ def quick_sort(arr, l, r): # 快排
     i, j = l, r
     while i < j:
         while i < j and arr[j] >= arr[l]: j -= 1
-        while i < j and arr[i] <= arr[i]: i += 1
+        while i < j and arr[i] <= arr[l]: i += 1
         arr[i], arr[j] = arr[i], arr[j]
     arr[l], arr[i] = arr[i], arr[l]
     quick_sort(arr, l, i - 1)

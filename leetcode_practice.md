@@ -1877,6 +1877,11 @@ class Solution:
 class Solution:
     def validPalindrome(self, s: str) -> bool:
         # 双指针：（1）s[left]==s[right]：Y则left+=1，right-=1 N则判断s[left: right] 或者 s[left+1:right+1]是否符合回文（单字符也是回文）
+        def zero2none(x):
+            if x<0:
+                return None
+            else:
+                return x
         if s == s[::-1]:
             return True
         left, right = 0, len(s) - 1
@@ -1886,13 +1891,14 @@ class Solution:
                 left += 1
                 right -= 1
             else:
-                if s[left: right: -1] == s[left: right] or s[left + 1: right + 1: -1] == s[left + 1: right + 1]:
+                # print(left, right)
+                # print(s[left: right], s[left + 1: right + 1])
+                if s[left: right] == s[right - 1: zero2none(left - 1):  -1] or s[left + 1: right + 1] == s[right: zero2none(left) : -1] or right == left + 1:
                     return True
                 else:
                     return False
         return True
 ```
-
 
 [剑指 Offer II 020. 回文子字符串的个数](https://leetcode-cn.com/problems/a7VOhD/)
 
@@ -1900,7 +1906,30 @@ class Solution:
 
 具有不同开始位置或结束位置的子串，即使是由相同的字符组成，也会被视作不同的子串。
 
-
+```python
+class Solution:
+    def countSubstrings(self, s: str) -> int:
+        # dp，由对角线填补
+        n = len(s)
+        dp = [[0 for _ in range(n)] for _ in range(n)]
+        ans = 0
+        for i in range(n): # 对角线
+            dp[i][i] = 1
+            ans += 1
+        for i in range(n-1):
+            dp[i][i+1] = 1 if s[i] == s[i+1] else 0
+            ans += dp[i][i+1]
+        for add in range(2, n):
+            for i in range(n):
+                j = i + add 
+                # print(i, j)
+                if j <= n - 1:                
+                    dp[i][j] = 1 if dp[i+1][j-1] == 1 and s[i]==s[j] else 0
+                    # print(i, j, dp[i][j])
+                    ans += dp[i][j]
+        # print(dp)
+        return ans 
+```
 
 
 

@@ -1931,8 +1931,12 @@ class Solution:
         return ans 
 ```
 
+## 第 7 天 链表
 
+[剑指 Offer II 021. 删除链表的倒数第 n 个结点](https://leetcode-cn.com/problems/SLwz0R/)
 
+给定一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。
 
+解法：双指针（快慢指针）、压入栈（先进后出，弹出的第n个则为倒数的第n个）
 
 

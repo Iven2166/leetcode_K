@@ -1,4 +1,6 @@
-- [剑指 Offer-leetcode练习题](#---offer-leetcode---)
+目录
+
+- [剑指 Offer-leetcode练习题](#剑-指-Offer-leetcode-练-习-题)
   * [第 9 天 动态规划（中等）](#--9-----------)
   * [第 10 天 动态规划（中等）](#--10-----------)
   * [第 11 天 双指针（简单）](#--11----------)
@@ -29,8 +31,6 @@
   * [第 5 天 字符串](#--5------)
   * [第 6 天 字符串](#--6------)
   * [第 7 天 链表](#--7-----)
-
-<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
 
 # 剑指 Offer-leetcode练习题

@@ -24,11 +24,12 @@
         - [78. 子集 (mid)](https://leetcode-cn.com/problems/subsets/)
     - 动态规划
         - [416. 分割等和子集 (mid)](https://leetcode-cn.com/problems/partition-equal-subset-sum/)
+    - 滑动窗口
+        - [713. 乘积小于 K 的子数组](https://leetcode-cn.com/problems/subarray-product-less-than-k/)
 - 二叉树
     - 动态规划
         - [96. 不同的二叉搜索树 (mid)](https://leetcode-cn.com/problems/unique-binary-search-trees/)
     
-
 
 ## 数组
 ### 中等
@@ -203,6 +204,24 @@ class Solution:
         return dp[n - 1][target]
 ```
 
+[713. 乘积小于 K 的子数组](https://leetcode-cn.com/problems/subarray-product-less-than-k/)
+
+给你一个整数数组 nums 和一个整数 k ，请你返回子数组内所有元素的乘积严格小于 k 的连续子数组的数目。
+
+- 滑动窗口 
+
+```python
+class Solution:
+    def numSubarrayProductLessThanK(self, nums: List[int], k: int) -> int:
+        prod, ans, i = 1, 0, 0
+        for j, num in enumerate(nums):
+            prod *= num
+            while i <= j and prod >= k:
+                prod //= nums[i]
+                i += 1
+            ans += j - i + 1 # 满足prod<k的条件时，有以nums[j]为结尾的 j - i + 1 个数组
+        return ans
+```
 
 ## 二叉树
 

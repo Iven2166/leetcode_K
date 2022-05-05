@@ -10,6 +10,7 @@
 
 ```python
 class Solution:
+
     def maxSubArray(self, nums: List[int]) -> int:
         dp = 0
         dp_max = -float('inf')

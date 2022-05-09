@@ -1944,3 +1944,105 @@ class Solution:
 解法：双指针（快慢指针）、压入栈（先进后出，弹出的第n个则为倒数的第n个）
 
 
+
+[剑指 Offer II 023. 两个链表的第一个重合节点](https://leetcode-cn.com/problems/3u1WK4/)
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
+        # 简单法
+        # a, b = headA, headB
+        # s = set()
+        # while a:
+        #     s.add(a)
+        #     a = a.next 
+        # while b:
+        #     if b in s:
+        #         return b 
+        #     else:
+        #         b = b.next 
+        # return None
+
+        # 双指针
+        if not headA or not headB:
+            return None 
+        a, b = headA, headB
+        while a!=b:
+            a = a.next if a else headB
+            b = b.next if b else headA
+        return a 
+```
+
+## 第 8 天 链表
+
+[剑指 Offer II 024. 反转链表](https://leetcode-cn.com/problems/UHnkqh/)
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reverseList(self, head: ListNode) -> ListNode:
+        if not head:
+            return head 
+        stack = list()
+        p = head 
+        while p:
+            stack.append(p)
+            p = p.next
+        ans = stack[-1]
+        while stack:
+            p = stack.pop()
+            p.next = stack[-1] if stack else None
+        return ans
+```
+
+[剑指 Offer II 025. 链表中的两数相加](https://leetcode-cn.com/problems/lMSNwu/)
+
+给定两个 非空链表 l1和 l2 来代表两个非负整数。数字最高位位于链表开始位置。它们的每个节点只存储一位数字。将这两数相加会返回一个新的链表。
+
+可以假设除了数字 0 之外，这两个数字都不会以零开头。
+
+解法
+- 反转链表来对齐末位
+- 通过栈来进行定位
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def addTwoNumbers(self, l1: ListNode, l2: ListNode) -> ListNode:
+        if l1 == ListNode(0) or l2 == ListNode(0):
+            return l1 if l2 == ListNode(0) else l2 
+        n1, n2 = '', ''
+        p1, p2 = l1, l2 
+        while p1:
+            n1 += str(p1.val)
+            p1 = p1.next 
+        while p2:
+            n2 += str(p2.val)
+            p2 = p2.next 
+        n = int(n1) + int(n2)
+        ans = ListNode(0)
+        p = ans
+        # print(n)
+        for pos, i in enumerate(str(n)):
+            p.val = int(i)
+            if pos == len(str(n)) - 1:
+                return ans
+            p.next = ListNode()
+            p = p.next
+```
+
+

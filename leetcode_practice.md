@@ -2045,4 +2045,155 @@ class Solution:
             p = p.next
 ```
 
+[剑指 Offer II 026. 重排链表](https://leetcode.cn/problems/LGjMqU/)
+
+- 解题思路1：因为是头尾相接，所以利用两个栈以及弹出，重新构造顺序。注意边缘条件
+
+执行用时：
+64 ms
+, 在所有 Python3 提交中击败了
+98.69%
+的用户
+内存消耗：
+23.4 MB
+, 在所有 Python3 提交中击败了
+12.99%
+的用户
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reorderList(self, head: ListNode) -> None:
+        """
+        Do not return anything, modify head in-place instead.
+        """
+        # 1. stack1 and stack2 to store 
+        # 2. stack1.append() -> [1,2,3,4,5]
+        # 3. stack1.pop() while time <= n // 2 -> stack1 = [1,2,3], stack2 [4,5]
+        # 4. curr = stack1.pop() if len%2==1 else None 
+        # 5. while s1 and s2: p1 = stack1.pop(), p2 = stack2.pop(), p1.next = p2, p2.next = curr, curr = p1 
+        stack1, stack2 = list(), list()
+        p = head 
+        while p:
+            stack1.append(p)
+            p = p.next 
+        n = len(stack1)
+        while len(stack2) < n // 2:
+            stack2.append(stack1.pop())
+        curr = stack1.pop() if len(stack1) - len(stack2) == 1 else None 
+        if curr:
+            curr.next = None 
+        while stack1 and stack2:
+            p1 = stack1.pop()
+            p2 = stack2.pop()
+            p1.next = p2 
+            p2.next = curr 
+            curr = p1 
+        
+```
+
+## 第 9 天 链表
+
+[剑指 Offer II 027. 回文链表](https://leetcode.cn/problems/aMhZSa/)
+
+给定一个链表的 头节点 head ，请判断其是否为回文链表。如果一个链表是回文，那么链表节点序列从前往后看和从后往前看是相同的。
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def isPalindrome(self, head: ListNode) -> bool:
+        # new = ListNode()
+        # p1 = new 
+        q = head
+        stack = list()
+        while q:
+            stack.append(q.val)
+            q = q.next 
+        return True if stack == stack[::-1] else False
+```
+
+[剑指 Offer II 028. 展平多级双向链表](https://leetcode.cn/problems/Qv1Da2/)
+
+[参考](https://leetcode.cn/problems/Qv1Da2/solution/zhan-ping-duo-ji-shuang-xiang-lian-biao-x5ugr/)
+
+```python
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, val, prev, next, child):
+        self.val = val
+        self.prev = prev
+        self.next = next
+        self.child = child
+"""
+
+class Solution:
+    def flatten(self, head: 'Node') -> 'Node':
+        def dfs(node):
+            # 作用是返回node的最后一个位置，用于有child情况下，last作为next，而原本的next作为last的next
+            curr = node 
+            last = None 
+            while curr:
+                nxt = curr.next # eq0
+                if curr.child:
+                    # 将child转为next，找到末尾位置，接上原本的next，也就是目前的nxt（eq0）；再置空child
+                    child_last = dfs(curr.child)
+                    # 将 node 与 child 相连
+                    curr.next = curr.child 
+                    curr.child.prev = curr 
+
+                    # 如果nxt不为空，将last和nxt连接
+                    if nxt:
+                        child_last.next = nxt 
+                        nxt.prev = child_last
+                    curr.child = None 
+                    last = child_last
+                else:
+                    last = curr 
+                curr = nxt # 往next遍历
+            return last 
+        dfs(head)
+        return head
+```
+
+[剑指 Offer II 029. 排序的循环链表](https://leetcode.cn/problems/4ueAj6/)
+
+给定循环单调非递减列表中的一个点，写一个函数向这个列表中插入一个新元素 insertVal ，使这个列表仍然是循环升序的。
+
+```python
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, val=None, next=None):
+        self.val = val
+        self.next = next
+"""
+
+class Solution:
+    def insert(self, head: 'Node', insertVal: int) -> 'Node':
+        if not head:
+            node = Node(insertVal)
+            node.next = node 
+            return node 
+        p = head 
+        while head != p.next: # 这个很重要，说明以下情况均不符合，比如 [3,3,3], 2
+            if p.next.val < p.val: # [1,2,3] 里面 3的情况
+                if insertVal > p.val: break
+                if insertVal < p.next.val: break 
+            if insertVal >= p.val and insertVal <= p.next.val:
+                break 
+            p = p.next 
+        p.next = Node(insertVal, p.next)
+        return head
+```
+
+
 

@@ -18,6 +18,7 @@
 - 数组
     - 双指针
         - [31. 下一个排列 (mid)](https://leetcode-cn.com/problems/next-permutation/)
+        - [942. 增减字符串匹配(easy)](https://leetcode.cn/problems/di-string-match/)
     - 回溯
         - [78. 子集 (mid)](https://leetcode-cn.com/problems/subsets/)
     - 位运算

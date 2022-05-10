@@ -71,7 +71,6 @@ class Solution:
 
         return dp[n - 1][target]
 
-
-
-
 print(Solution().canPartition(tmp1))
+
+

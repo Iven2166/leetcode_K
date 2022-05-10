@@ -2195,5 +2195,151 @@ class Solution:
         return head
 ```
 
+## 第 10 天 哈希表
+
+[剑指 Offer II 030. 插入、删除和随机访问都是 O(1) 的容器](https://leetcode.cn/problems/FortPu/)
+
+```python
+class RandomizedSet:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.d = dict()
+        self.stack = list()
+
+    def insert(self, val: int) -> bool:
+        """
+        Inserts a value to the set. Returns true if the set did not already contain the specified element.
+        """
+        if val in self.d.keys():
+            return False
+        self.d[val] = len(self.stack)
+        self.stack.append(val)
+        return True 
+         
+    def remove(self, val: int) -> bool:
+        """
+        Removes a value from the set. Returns true if the set contained the specified element.
+        """
+        if val not in self.d.keys():
+            return False 
+        self.d[self.stack[-1]] = self.d[val]
+
+        self.stack[self.d[val]] = self.stack[-1]
+        self.stack.pop()
+        del self.d[val]
+        return True 
+
+    def getRandom(self) -> int:
+        """
+        Get a random element from the set.
+        """
+        pos = random.randint(0, len(self.stack) - 1)
+        return self.stack[pos]
+
+# Your RandomizedSet object will be instantiated and called as such:
+# obj = RandomizedSet()
+# param_1 = obj.insert(val)
+# param_2 = obj.remove(val)
+# param_3 = obj.getRandom()
+```
+
+[剑指 Offer II 031. 最近最少使用缓存](https://leetcode.cn/problems/OrIXps/)
 
 
+```python
+import queue
+class LRUCache:
+
+    def __init__(self, capacity: int):
+        self.n = capacity
+        self.q = queue.deque() # 最左端为最久未使用，一使用即放到最右端
+        self.d = dict()
+
+    def get(self, key: int) -> int:
+        if key in self.d.keys() and key in self.q:
+            # 更新最久未之用的queue序列
+            tmp = list(self.q)
+            idx = tmp.index(key)
+            tmp[idx:len(tmp)-1] = tmp[idx+1:]
+            tmp[-1] = key 
+            self.q = queue.deque(tmp)
+        return self.d[key] if key in self.d.keys() else -1
+
+    def put(self, key: int, value: int) -> None:
+        if key in self.d.keys():
+            tmp = list(self.q)
+            idx = tmp.index(key)
+            tmp[idx:len(tmp)-1] = tmp[idx+1:]
+            tmp[-1] = key 
+            self.q = queue.deque(tmp)
+            self.d[key] = value 
+        elif len(self.q) < self.n:
+            self.q.append(key)
+            self.d[key] = value 
+        else:
+            curr = self.q.popleft()
+            if curr in self.d.keys():
+                del self.d[curr]
+            self.d[key] = value
+            self.q.append(key)
+
+# Your LRUCache object will be instantiated and called as such:
+# obj = LRUCache(capacity)
+# param_1 = obj.get(key)
+# obj.put(key,value)
+```
+
+[剑指 Offer II 032. 有效的变位词](https://leetcode.cn/problems/dKk3P7/)
+
+```python
+class Solution:
+    def isAnagram(self, s: str, t: str) -> bool:
+        ds = collections.Counter(s)
+        dt = collections.Counter(t)
+        if ds == dt and s != t:
+            return True 
+        else:
+            return False
+```
+
+## 第 12 天 栈
+
+[剑指 Offer II 036. 后缀表达式](https://leetcode.cn/problems/8Zf90G/)
+
+```python
+class Solution:
+    def evalRPN(self, tokens: List[str]) -> int:
+        stack = list()
+        for i in tokens:
+            if i not in ['+','-','*','/']:
+                stack.append(int(i))
+            else:
+                p1 = stack.pop()
+                p2 = stack.pop()
+                if i == '+': stack.append(p1 + p2)
+                elif i == '-': stack.append(p2 - p1)
+                elif i == '*': stack.append(p1 * p2)
+                elif i == '/': stack.append(int(p2 / p1))
+            # print(stack)
+        return stack[-1]
+```
+
+[剑指 Offer II 037. 小行星碰撞](https://leetcode.cn/problems/XagZNi/)
+
+```python
+class Solution:
+    def asteroidCollision(self, asteroids):
+        s, p = [], 0
+        while p < len(asteroids):
+            if not s or s[-1] < 0 or asteroids[p] > 0:
+                s.append(asteroids[p])
+            elif s[-1] <= -asteroids[p]:
+                if s.pop() < -asteroids[p]:
+                    continue # 返回while
+            print(s)
+            p += 1
+        return s
+```

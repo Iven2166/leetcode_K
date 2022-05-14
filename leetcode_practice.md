@@ -2343,3 +2343,41 @@ class Solution:
             p += 1
         return s
 ```
+
+[剑指 Offer II 038. 每日温度](https://leetcode.cn/problems/iIQa4I/)
+
+请根据每日 气温 列表 temperatures ，重新生成一个列表，要求其对应位置的输出为：要想观测到更高的气温，至少需要等待的天数。如果气温在这之后都不会升高，请在该位置用 0 来代替。
+
+[参考](https://leetcode.cn/problems/iIQa4I/solution/mei-ri-wen-du-by-leetcode-solution-vh9j/)
+
+- 逆序遍历得到比当前位置温度高的最短index，需要一个dict来存储。
+复杂度 O(NM), M为温度范围, N为数组长度
+
+- 栈来做，利用向后找更高气温的特点，形成反向思维。一旦有比目前(A)更大的数(B)，则弹出目前的数(A)并记录状态。由于比目前更大的数(B)更大的数(C)还未出现，所以弹出A是没问题的（因为对于A来说，能找B就不找C）。
+  复杂度 O(N)
+
+```python
+class Solution:
+    def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
+        # （1）利用dict进行存储
+        # n = len(temperatures)
+        # ans, nxt, big = [0] * n, dict(), 10 ** 9 + 1
+        # for i in range(n-1, -1, -1):
+        #     warmer_index = min([nxt.get(tem, big) for tem in range(temperatures[i]+1, 102)])
+        #     if warmer_index != big:
+        #         ans[i] = warmer_index - i 
+        #     nxt[temperatures[i]] = i # 此刻更新最新位置，相当于单独跑nxt
+        # return ans 
+        # ------------------------------------------------- 
+        # （2）利用栈，存储每一次的最近高气温的index
+        n = len(temperatures)
+        ans, preIndex = [0] * n, list()
+        for i, j in enumerate(temperatures):
+            while preIndex and j > temperatures[preIndex[-1]]:
+                tmp = preIndex.pop()
+                ans[tmp] = i - tmp
+            preIndex.append(i)
+        return ans 
+```
+
+

@@ -2380,4 +2380,38 @@ class Solution:
         return ans 
 ```
 
+## 第 13 天 栈
+
+[剑指 Offer II 039. 直方图最大矩形面积](https://leetcode.cn/problems/0ynMMM/)
+
+给定非负整数数组 heights，数组中的数字用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1 。
+
+求在该柱状图中，能够勾勒出来的矩形的最大面积。
+
+```python
+class Solution:
+    def largestRectangleArea(self, heights: List[int]) -> int:
+        stack = [-1,]
+        maxArea = 0
+        for i in range(len(heights)):
+            while stack[-1] != -1 and heights[stack[-1]] >= heights[i]:
+                height = heights[stack[-1]]
+                stack.pop()
+                width = i - stack[-1] - 1 
+                maxArea = max(maxArea, height * width)
+            stack.append(i)
+        
+        while stack[-1] != -1:
+            height = heights[stack[-1]]
+            stack.pop()
+            width = len(heights) - stack[-1] - 1
+            maxArea = max(maxArea, height * width)
+        
+        return maxArea
+```
+
+## 第 14 天 队列
+
+[剑指 Offer II 041. 滑动窗口的平均值](https://leetcode.cn/problems/qIsx9U/)
+
 

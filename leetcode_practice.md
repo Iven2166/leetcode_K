@@ -2824,4 +2824,105 @@ class Solution:
         return total
 ```
 
+## 第 17 天 树
 
+[剑指 Offer II 050. 向下的路径节点之和](https://leetcode.cn/problems/6eUYwP/)
+
+官方dfs（利用dict）：执行用时：
+52 ms
+, 在所有 Python3 提交中击败了
+83.07%
+的用户
+
+自己dfs：
+执行用时：
+324 ms
+, 在所有 Python3 提交中击败了
+44.81%
+的用户
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def pathSum(self, root: TreeNode, targetSum: int) -> int:
+        
+        # (2)官方解法，因为是用前缀和，通过dict()保存了信息
+        prefix = collections.defaultdict(int)
+        prefix[0] = 1 # 前缀和之差为0时，
+
+        def dfs(root, curr): # 返回以root为根结点时的符合条件的路径个数 ret
+            if not root: # 退出条件：空树为 0
+                return 0
+            
+            ret = 0
+            curr += root.val # curr为前缀和，更新加上目前的val
+            ret += prefix[curr - targetSum] # 如果curr符合条件，加上路径个数
+            prefix[curr] += 1 # curr前缀和的路径数+1（这是目前节点能看到的情况，没有向下看），用于传递给 left和right使用
+            ret += dfs(root.left, curr)
+            ret += dfs(root.right, curr)
+            prefix[curr] -= 1 # 比如进入left后，curr应该“原封不动”+-1，然后退出来给right用
+
+            return ret
+
+        return dfs(root, 0)
+
+        # （1）dfs自己的写法
+        # if not root:
+        #     return 0
+        # self.total = 0
+        # def dfs(curr): # 函数用于返回curr为根节点时，所有路径的和，形式为list
+        #     if curr.val== targetSum:
+        #         self.total += 1
+        #     ans = [curr.val, ]
+        #     if not curr.left and not curr.right: # 当到达叶子结点时
+        #         return ans            
+        #     if curr.left:
+        #         for i in dfs(curr.left): # 左树的各种路径和的组合，用于和curr.val 加总判断
+        #             if curr.val + i == targetSum:
+        #                 self.total += 1
+        #             ans.append(curr.val + i) 
+        #     if curr.right:
+        #         for i in dfs(curr.right): # 右树的各种路径和的组合，用于和curr.val 加总判断
+        #             if curr.val + i == targetSum:
+        #                 self.total += 1
+        #             ans.append(curr.val + i)
+        #     return ans # 由于这里是要统计所有路径的和，所以要等结合左右子树一起算完，才返回ans
+        
+        # dfs(root)
+        # return self.total
+```
+
+[剑指 Offer II 051. 节点之和最大的路径](https://leetcode.cn/problems/jC7MId/)
+
+
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def maxPathSum(self, root: TreeNode) -> int:
+        self.total = -1001
+        def helper(curr):
+            if not curr.left and not curr.right: # 到达叶子结点
+                self.total = max(self.total, curr.val)
+                return curr.val
+            
+            withleft = helper(curr.left) if curr.left else 0
+            withright = helper(curr.right) if curr.right else 0
+            print(curr.val)
+            print(withleft, withright)
+            self.total = max(self.total, curr.val + withleft + withright, curr.val + withleft, curr.val + withright, curr.val)
+            return max(curr.val, curr.val + withleft, curr.val + withright)
+        helper(root)
+        # print(self.total)
+        return self.total
+```

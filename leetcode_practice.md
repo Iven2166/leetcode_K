@@ -2412,6 +2412,416 @@ class Solution:
 
 ## 第 14 天 队列
 
-[剑指 Offer II 041. 滑动窗口的平均值](https://leetcode.cn/problems/qIsx9U/)
+[剑指 Offer II 043. 往完全二叉树添加节点](https://leetcode.cn/problems/NaqhDT/)
+
+> `完全二叉树`是每一层（除最后一层外）都是完全填充（即，节点数达到最大，第 n 层有 2n-1 个节点）的，并且所有的节点都尽可能地集中在左侧。
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class CBTInserter:
+
+    def __init__(self, root: TreeNode):
+        self.root = root 
+        from collections import deque
+        q = deque([root,])
+        self.stack = []
+        while q:
+            curr = q.popleft()
+            self.stack.append(curr)
+            if curr.left: q.append(curr.left)
+            if curr.right: q.append(curr.right)
+
+    def insert(self, v: int) -> int:
+        curr = TreeNode(val = v)
+        n = len(self.stack) + 1
+        if n % 2 == 1:
+            idx = (n-1)//2-1
+            self.stack[idx].right = curr 
+        else:
+            idx = n//2 - 1
+            self.stack[idx].left = curr 
+        self.stack.append(curr)
+        return self.stack[idx].val
+
+    def get_root(self) -> TreeNode:
+        return self.root
+
+
+# Your CBTInserter object will be instantiated and called as such:
+# obj = CBTInserter(root)
+# param_1 = obj.insert(v)
+# param_2 = obj.get_root()
+```
+
+## 第 15 天 队列
+
+[剑指 Offer II 044. 二叉树每层的最大值](https://leetcode.cn/problems/hPov7L/)
+
+给定一棵二叉树的根节点 root ，请找出该二叉树中每一层的最大值。
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def largestValues(self, root: TreeNode) -> List[int]:
+        if not root:
+            return []
+        q = collections.deque([root,])
+        ans = list()
+        while q:
+            n = len(q)
+            maxnum = - 2 ** 31 - 1
+            while n:
+                curr = q.popleft()
+                maxnum = max(maxnum, curr.val)
+                if curr.left: q.append(curr.left)
+                if curr.right: q.append(curr.right)
+                n -= 1
+            ans.append(maxnum)
+        return ans 
+```
+
+[剑指 Offer II 045. 二叉树最底层最左边的值](https://leetcode.cn/problems/LwUNpT/)
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def findBottomLeftValue(self, root: TreeNode) -> int:
+        q = collections.deque([root,])
+        left = root.val 
+        while q:
+            n = len(q)
+            flag = True
+            while n:                
+                curr = q.popleft()
+                if flag: 
+                    left = curr.val 
+                    flag = False
+                if curr.left: q.append(curr.left)
+                if curr.right: q.append(curr.right)
+                n -= 1
+        return left 
+```
+
+[剑指 Offer II 046. 二叉树的右侧视图](https://leetcode.cn/problems/WNC0Lk/)
+
+给定一个二叉树的 根节点 root，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值。
+
+其实就是上一题的变种，积累下最右侧的val
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def rightSideView(self, root: TreeNode) -> List[int]:
+        if not root:
+            return []
+        q = collections.deque([root,])
+        ans = []
+        while q:
+            n = len(q)
+            while n:                
+                curr = q.popleft()
+                if curr.left: q.append(curr.left)
+                if curr.right: q.append(curr.right)
+                n -= 1
+                if n == 0: ans.append(curr.val)
+        return ans 
+```
+
+## 第 16 天  树
+
+[剑指 Offer II 047. 二叉树剪枝](https://leetcode.cn/problems/pOCWxh/)
+
+
+半暴力解法
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def pruneTree(self, root: TreeNode) -> TreeNode:
+        self.root = root
+        self.max_depth = 0
+        def dfs(curr, depth):
+            if not curr:
+                self.max_depth = max(self.max_depth, depth)
+                return 
+            if curr.left and not curr.left.left and not curr.left.right and curr.left.val == 0:
+                curr.left = None 
+            if curr.right and not curr.right.left and not curr.right.right and curr.right.val == 0:
+                curr.right = None 
+            dfs(curr.left, depth + 1)
+            dfs(curr.right, depth + 1)
+        dfs(self.root, 0)
+        for _ in range(self.max_depth):
+            dfs(self.root, 0)
+        if self.root.val == 0 and not self.root.left and not self.root.right:
+            return None
+        return self.root
+```
+
+递归解法
+(执行用时：
+40 ms
+, 在所有 Python3 提交中击败了
+49.85%
+的用户)
+```python
+class Solution:
+    def pruneTree(self, root: TreeNode) -> TreeNode:
+        if not root:
+            return None
+        # 要先把子树做处理，再判断
+        left = self.pruneTree(root.left) 
+        right = self.pruneTree(root.right)
+        if root.val == 0 and not left and not right:
+            return None 
+        # 接回
+        root.left = left 
+        root.right = right
+        return root
+```
+
+很奇怪的是，改变顺序变得更快些.
+(执行用时：
+32 ms
+, 在所有 Python3 提交中击败了
+90.89%
+的用户)
+```python
+class Solution:
+    def pruneTree(self, root: TreeNode) -> TreeNode:
+        if not root:
+            return None 
+        left = self.pruneTree(root.left)
+        right = self.pruneTree(root.right)
+        root.left = left 
+        root.right = right 
+        if root.val == 0 and not left and not right:
+            return None 
+        return root
+```
+
+[hard-剑指 Offer II 048. 序列化与反序列化二叉树](https://leetcode.cn/problems/h54YBf/)
+
+- DFS
+[参考](https://leetcode.cn/problems/h54YBf/solution/xu-lie-hua-yu-fan-xu-lie-hua-er-cha-shu-dh5vl/)
+  
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Codec:
+
+    def serialize(self, root):
+        """Encodes a tree to a single string.
+        
+        :type root: TreeNode
+        :rtype: str
+        """
+        def dfs(curr, res):
+            if not curr:
+                res += 'n,'
+                return res
+            res += str(curr.val)
+            res += ','
+            res = dfs(curr.left, res)
+            res = dfs(curr.right, res)
+            return res 
+        res = dfs(root, '')
+        print(res)
+        return res
+
+    def deserialize(self, data):
+        """Decodes your encoded data to tree.
+        
+        :type data: str
+        :rtype: TreeNode
+        """
+        if data == 'n,':
+            return None 
+        stack = data[0:-1].split(',')
+        # print(stack)
+        def helper(curr):
+            print('--')
+            if curr[0]=='n':
+                curr.pop(0)    
+                return None 
+            num = int(curr[0])
+            curr.pop(0)
+            root = TreeNode(num)
+            # print('left', curr)
+            root.left = helper(curr)
+            # print('right', curr)
+            root.right = helper(curr)
+            return root
+
+        root = helper(stack)
+        # print(root)
+        return root
+         
+
+# Your Codec object will be instantiated and called as such:
+# ser = Codec()
+# deser = Codec()
+# ans = deser.deserialize(ser.serialize(root))
+```
+
+- BFS：超时
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Codec:
+
+    def serialize(self, root):
+        """Encodes a tree to a single string.
+        
+        :type root: TreeNode
+        :rtype: str
+        """
+        q = deque([root,])
+        ans = ''
+        time = 0
+        while q:
+            # print(q)
+            stack = []
+            n = len(q)
+            value = 0
+            while n:
+                curr = q.popleft()
+                if not curr:
+                    stack.append('n')
+                    q.append(None)
+                    q.append(None)
+                else:
+                    stack.append(str(curr.val))
+                    value += 1
+                    q.append(curr.left if curr.left else None)
+                    q.append(curr.right if curr.right else None)
+                n -= 1
+            # 加一个非none的计数器？
+            if value == 0: 
+                break 
+            # print(stack)
+            ans += ','.join(stack) + '|'
+        # print(ans[0:-1].split('|'))
+        return ans 
+
+    def deserialize(self, data):
+        """Decodes your encoded data to tree.
+        
+        :type data: str
+        :rtype: TreeNode
+        """
+        if data == '':
+            return None
+        # split to each levels of tree 
+        levels = data[0:-1].split('|')
+        root = TreeNode(int(levels[0]))
+        # print(root)
+        q = deque()
+        q.append(root)
+        for level in levels[1::]:
+            curr = level.split(',')
+            # print(curr)
+            n = len(q)
+            j = 0 # index in curr
+            for i in range(n): # index in q
+                father = q.popleft()
+                if not father:
+                    j += 2
+                    q.append(None)
+                    q.append(None)
+                else:
+                    for _ in range(2):
+                        if j % 2 == 0:
+                            father.left = TreeNode(int(curr[j])) if curr[j]!='n' else None 
+                            q.append(father.left)
+                        else:
+                            father.right = TreeNode(int(curr[j])) if curr[j]!='n' else None 
+                            q.append(father.right)
+                        j += 1
+                # print(father)
+        # print(root)
+        return root
+        
+
+# Your Codec object will be instantiated and called as such:
+# ser = Codec()
+# deser = Codec()
+# ans = deser.deserialize(ser.serialize(root))
+```
+
+[剑指 Offer II 049. 从根节点到叶节点的路径数字之和](https://leetcode.cn/problems/3Etpl5/)
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def sumNumbers(self, root: TreeNode) -> int:
+        # 前置问题：root.val 会等于0么？
+        # （1）DFS，通过搜索每条路径，达到无左右子树时进行结算，如果还不是none，说明还需要整体*10加上该数
+        # self.res = 0
+        # def dfs(curr, num):
+        #     num = num * 10 + curr.val 
+        #     n1, n2 = num, num 
+        #     if not curr.left and not curr.right:
+        #         self.res += num
+        #         return 
+        #     if curr.left:
+        #         dfs(curr.left, n1)
+        #     if curr.right:
+        #         dfs(curr.right, n2)
+
+        # dfs(root, 0)
+        # return self.res
+
+        # （2）DFS简洁写法
+        def dfs(curr, total):
+            if not curr:
+                return  0
+            total = total * 10 + curr.val 
+            if not curr.left and not curr.right:
+                return total 
+            else:
+                return dfs(curr.left, total ) + dfs(curr.right, total)
+        total = dfs(root, 0)
+        return total
+```
 
 

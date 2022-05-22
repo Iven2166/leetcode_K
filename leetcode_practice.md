@@ -2926,3 +2926,112 @@ class Solution:
         # print(self.total)
         return self.total
 ```
+
+## 第 18 天  树
+
+[剑指 Offer II 053. 二叉搜索树中的中序后继](https://leetcode.cn/problems/P5rCT8/)
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def inorderSuccessor(self, root: 'TreeNode', p: 'TreeNode') -> 'TreeNode':
+        # self.stack = list()
+        self.ans, self.flag = None, False
+        def print_mid(curr):
+            if not curr and self.ans: # 到达叶子节点或者是找到答案时return节约时间
+                return 
+            if curr.left:
+                print_mid(curr.left)
+            if self.flag and not self.ans:
+                self.ans = curr
+            if curr == p:
+                self.flag = True 
+            # self.stack.append(curr.val)
+            if curr.right:
+                print_mid(curr.right)
+        
+        print_mid(root)
+        return self.ans
+```
+
+[剑指 Offer II 054. 所有大于等于节点的值之和](https://leetcode.cn/problems/w6cpku/)
+
+- （1）一次性遍历-中序遍历-反序列 
+  执行用时：
+60 ms
+, 在所有 Python3 提交中击败了
+87.10%
+的用户
+  
+- （2）遍历两次
+执行用时：
+76 ms
+, 在所有 Python3 提交中击败了
+21.84%
+的用户
+  
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def convertBST(self, root: TreeNode) -> TreeNode:
+        # （1）一次性遍历-中序遍历-反序列
+        total = 0
+        def dfs(curr):
+            if not curr:
+                return 
+            nonlocal total 
+            if curr.right:
+                dfs(curr.right )
+            total += curr.val
+            curr.val = total 
+            
+            if curr.left:
+                dfs(curr.left)
+
+        dfs(root)
+        return root
+        
+        # （2）自己-两次
+        # # 是否必须得先看全局的和？？
+        # self.total, self.cum = 0, 0 # 总和以及累计值
+        # def cal(curr):
+        #     if not curr:
+        #         return 
+        #     self.total += curr.val 
+        #     if curr.left:
+        #         cal(curr.left)
+        #     if curr.right:
+        #         cal(curr.right)
+        
+        # def walk(curr):
+        #     if not curr:
+        #         return 
+        #     if curr.left:
+        #         walk(curr.left)
+        #     print(curr.val)
+        #     tmp = curr.val
+        #     curr.val = self.total - self.cum
+        #     self.cum += tmp
+        #     # print(curr.val)
+             
+        #     if curr.right:
+        #         walk(curr.right)
+            
+        # cal(root)
+        # walk(root)
+        # return root
+```
+
+
+

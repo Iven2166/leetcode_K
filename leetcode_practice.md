@@ -3034,4 +3034,76 @@ class Solution:
 ```
 
 
+## 第 19 天 树
+
+[剑指 Offer II 056. 二叉搜索树中两个节点之和](https://leetcode.cn/problems/opLdQZ/)
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    # （1）直接用是否在set中判断，不使用升序
+    # def __init__(self):
+    #     self.s = set()
+
+    # def findTarget(self, root: TreeNode, k: int) -> bool:
+    #     # 特点：二叉搜索树的中序遍历为升序排序
+    #     if not root:
+    #         return False
+    #     if k - root.val in self.s:
+    #         return True 
+    #     self.s.add(root.val)
+    #     return self.findTarget(root.left, k) or self.findTarget(root.right, k)
+    
+    # （2）利用升序，构造数组
+    def findTarget(self, root: Optional[TreeNode], k: int) -> bool:
+        arr = []
+        def inorderTraversal(node: Optional[TreeNode]) -> None:
+            if node:
+                inorderTraversal(node.left)
+                arr.append(node.val)
+                inorderTraversal(node.right)
+        inorderTraversal(root)
+
+        left, right = 0, len(arr) - 1
+        while left < right:
+            sum = arr[left] + arr[right]
+            if sum == k:
+                return True
+            if sum < k:
+                left += 1
+            else:
+                right -= 1
+        return False
+```
+
+[剑指 Offer II 057. 值和下标之差都在给定的范围内](https://leetcode.cn/problems/7WqeDu/)
+
+利用 SortedList 实现局部的排序，然后找到相邻的元素是否差的绝对值<=t（因为是排序的数组）
+
+```python
+class Solution:
+    def containsNearbyAlmostDuplicate(self, nums: List[int], k: int, t: int) -> bool:
+        from sortedcontainers import SortedList
+        st=SortedList()
+        for i,num in enumerate(nums):            
+            st.add(num)
+            index=bisect_left(st,num)
+            if index<len(st)-1 and st[index+1]-st[index]<=t:return True
+            if index>0 and st[index]-st[index-1]<=t:return True
+            if len(st)>k:
+                st.remove(nums[i-k])
+        return False
+            
+# 作者：yim-6
+# 链接：https://leetcode.cn/problems/7WqeDu/solution/python3-you-xu-ji-he-hua-dong-chuang-kou-6uk9/
+# 来源：力扣（LeetCode）
+# 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+```
+
+
 

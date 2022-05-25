@@ -3284,3 +3284,39 @@ class MagicDictionary:
 ```
 
 
+[剑指 Offer II 065. 最短的单词编码](https://leetcode.cn/problems/iSwD2y/)
+
+```python
+class Trie:
+    def __init__(self):
+        self.child = [None] * 26 
+        self.is_end = 0 
+        self.ans = 0
+
+    def insert(self, word):
+        node = self 
+        for ch in word:
+            idx = ord(ch) - ord('a')
+            if node.child[idx] is None:
+                node.child[idx] = Trie()
+            node = node.child[idx]
+        
+    def find(self, preword):
+        node = self
+        for ch in preword:
+            idx = ord(ch) - ord('a')
+            if node.child[idx] is not None:
+                node = node.child[idx]
+        if node.child == [None] * 26:
+            self.ans += len(preword) + 1
+
+class Solution:
+    def minimumLengthEncoding(self, words: List[str]) -> int:
+        tree = Trie()
+        words = list(set(words))
+        for w in words:
+            tree.insert(w[::-1])
+        for w in words:
+            tree.find(w[::-1])
+        return tree.ans
+```

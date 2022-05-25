@@ -3105,5 +3105,182 @@ class Solution:
 # 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 ```
 
+## 第 20 天 堆
+
+[剑指 Offer II 059. 数据流的第 K 大数值](https://leetcode.cn/problems/jBjn9C/)
+
+```python
+from heapq import * 
+class KthLargest:
+
+    def __init__(self, k: int, nums: List[int]):
+        self.nums = nums
+        self.k = k 
+        self.stack = list()
+        for i in nums:
+            heappush(self.stack, i)
+        for i in range(len(nums)-k):
+            heappop(self.stack)
+
+    def add(self, val: int) -> int:
+        heappush(self.stack, val)
+        if len(self.stack) > self.k:
+            heappop(self.stack)
+        return self.stack[0]
+
+
+# Your KthLargest object will be instantiated and called as such:
+# obj = KthLargest(k, nums)
+# param_1 = obj.add(val)
+```
+
+[剑指 Offer II 061. 和最小的 k 个数对](https://leetcode.cn/problems/qn8gGX/)
+
+
+## 第 21 天 前缀树
+
+[剑指 Offer II 062. 实现前缀树](https://leetcode.cn/problems/QC3q1f/)
+
+```python
+class Trie:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.child = [None] * 26 
+        self.is_end = False
+
+    def insert(self, word: str) -> None:
+        """
+        Inserts a word into the trie.
+        """
+        node = self 
+        for ch in word:
+            curr = ord(ch) - ord('a')
+            if node.child[curr] is None:
+                node.child[curr] = Trie()
+            node = node.child[curr]
+        node.is_end = True
+
+    def searchPrefix(self, word):
+        node = self 
+        for ch in word:
+            curr = ord(ch) - ord('a')
+            if node.child[curr] is None:
+                return None 
+            node = node.child[curr]
+        return node 
+
+
+    def search(self, word: str) -> bool:
+        """
+        Returns if the word is in the trie.
+        """
+        node = self.searchPrefix(word)
+        return node is not None and node.is_end
+
+    def startsWith(self, prefix: str) -> bool:
+        """
+        Returns if there is any word in the trie that starts with the given prefix.
+        """
+        return self.searchPrefix(prefix) is not None
+
+# Your Trie object will be instantiated and called as such:
+# obj = Trie()
+# obj.insert(word)
+# param_2 = obj.search(word)
+# param_3 = obj.startsWith(prefix)
+```
+
+[剑指 Offer II 063. 替换单词](https://leetcode.cn/problems/UhWRSj/)
+
+
+```python
+class myTrie:
+
+    def __init__(self):
+        self.child = [None] * 26
+        self.is_end = False  # 词根的结尾
+
+    def insert(self, word):
+        node = self
+        for ch in word:
+            idx = ord(ch) - ord('a')
+            if node.child[idx] is None:
+                node.child[idx] = myTrie()
+            node = node.child[idx]
+        node.is_end = True
+
+    def find_prefix(self, word):
+        node = self 
+        for i, ch in enumerate(word):
+            idx = ord(ch) - ord('a')
+            if node.child[idx] is not None:
+                node = node.child[idx]
+                if node.is_end:
+                    return i + 1
+            else:
+                return len(word)
+
+class Solution:
+    def replaceWords(self, dictionary: List[str], sentence: str) -> str:
+        tree = myTrie()
+        ans = []
+        for word in dictionary:
+            tree.insert(word)
+        node = tree
+        # while node:
+        #     for i in range(len(node.child)):
+        #         if node.child[i] is not None:
+        #             print(chr(i + ord('a')))
+        #             break 
+        #     node = node.child[i]
+        sen = sentence.split(' ')
+
+        for s in sen:
+            ans.append(s[0: tree.find_prefix(s)])
+        return ' '.join(ans)
+```
+
+[剑指 Offer II 064. 神奇的字典](https://leetcode.cn/problems/US1pGT/)
+
+```python
+class MagicDictionary:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.stack = []
+
+    def buildDict(self, dictionary: List[str]) -> None:
+        for word in dictionary:
+            self.stack.append(word)
+    
+    def find(self, word, searchWord):
+        times = 0
+        for i in range(len(word)):
+            if word[i]!=searchWord[i]:
+                if times == 0: 
+                    times += 1
+                else:
+                    return False 
+        return True if times else False # 需要修改至少一次
+
+    def search(self, searchWord: str) -> bool:
+        for w in self.stack:
+            if len(w) != len(searchWord):
+                continue
+            else:
+                if self.find(w, searchWord):
+                    return True 
+        return False
+
+# Your MagicDictionary object will be instantiated and called as such:
+# obj = MagicDictionary()
+# obj.buildDict(dictionary)
+# param_2 = obj.search(searchWord)
+```
 
 

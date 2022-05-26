@@ -3321,4 +3321,172 @@ class Solution:
         return tree.ans
 ```
 
+[剑指 Offer II 066. 单词之和](https://leetcode.cn/problems/z1R5dt/)
 
+```python
+class MapSum:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        # (1)在路过每个节点时，加上该word的value。但由于可能一个key存在两次，比如apple可能由3变成2，所以在每个节点进行遍历时同时累加该值的做法不现实。
+        #（2）要求每次sum时，对全部进行遍历？
+        self.child = [None] * 26
+        self.is_end = False
+        self.sum_value = [0] * 26
+        self.dictionary = dict()
+
+    def insert(self, key: str, val: int) -> None:
+        flag = False
+        if key in self.dictionary.keys():
+            oldval = self.dictionary[key]
+            flag = True
+        self.dictionary[key] = val 
+        node = self 
+        for ch in key:
+            idx = ord(ch) - ord('a')
+            if node.child[idx] is None:
+                node.child[idx] = MapSum()
+            node = node.child[idx]
+            node.sum_value[idx] += val 
+            if flag:
+                node.sum_value[idx] -= oldval
+
+    def sum(self, prefix: str) -> int:
+        node = self 
+        total = 0
+        for ch in prefix:
+            idx = ord(ch) - ord('a')
+            if node.child[idx] is None:
+                return 0
+            else:
+                node = node.child[idx]
+        total = node.sum_value[idx]
+        return total 
+
+# Your MapSum object will be instantiated and called as such:
+# obj = MapSum()
+# obj.insert(key,val)
+# param_2 = obj.sum(prefix)
+```
+
+[剑指 Offer II 067. 最大的异或](https://leetcode.cn/problems/ms70jA/)
+
+```python
+class Trie:
+    def __init__(self):
+        # 左子树指向表示 0 的子节点
+        self.left = None
+        # 右子树指向表示 1 的子节点
+        self.right = None
+
+class Solution:
+    def findMaximumXOR(self, nums: List[int]) -> int:
+        # 字典树的根节点
+        root = Trie()
+        # 最高位的二进制位编号为 30
+        HIGH_BIT = 30
+
+        def add(num: int):
+            cur = root
+            for k in range(HIGH_BIT, -1, -1):
+                bit = (num >> k) & 1
+                if bit == 0:
+                    if not cur.left:
+                        cur.left = Trie()
+                    cur = cur.left
+                else:
+                    if not cur.right:
+                        cur.right = Trie()
+                    cur = cur.right
+
+        def check(num: int) -> int:
+            cur = root
+            x = 0
+            for k in range(HIGH_BIT, -1, -1):
+                bit = (num >> k) & 1
+                if bit == 0:
+                    # a_i 的第 k 个二进制位为 0，应当往表示 1 的子节点 right 走
+                    if cur.right:
+                        cur = cur.right
+                        x = x * 2 + 1
+                    else:
+                        cur = cur.left
+                        x = x * 2
+                else:
+                    # a_i 的第 k 个二进制位为 1，应当往表示 0 的子节点 left 走
+                    if cur.left:
+                        cur = cur.left
+                        x = x * 2 + 1
+                    else:
+                        cur = cur.right
+                        x = x * 2
+            return x
+
+        n = len(nums)
+        x = 0
+        for i in range(1, n):
+            # 将 nums[i-1] 放入字典树，此时 nums[0 .. i-1] 都在字典树中
+            add(nums[i - 1])
+        # for i in range(1,n):# 因为后续的数字会跟前面所有的数字进行异或，相当于前面的数字能跟后面的异或了，所以不用重新循环
+            # 将 nums[i] 看作 ai，找出最大的 x 更新答案
+            x = max(x, check(nums[i]))
+
+        return x
+```
+
+## 第 23 天 二分查找
+
+[剑指 Offer II 068. 查找插入位置](https://leetcode.cn/problems/N6YdxV/)
+
+```python
+class Solution:
+    def searchInsert(self, nums: List[int], target: int) -> int:
+        n = len(nums)
+        l, r = 0, n - 1
+        ans = n
+        while l <= r:
+            mid = (l + r) // 2
+            if nums[mid] >= target:
+                ans = mid 
+                r = mid - 1
+            else:
+                l = mid + 1
+        return ans 
+```
+
+[剑指 Offer II 069. 山峰数组的顶部](https://leetcode.cn/problems/B1IidL/)
+
+```python
+class Solution:
+    def peakIndexInMountainArray(self, arr: List[int]) -> int:
+        n = len(arr)
+        l, r = 0, n - 1
+        while l <= r:
+            mid = (l + r) // 2
+            # print(l, r, mid, arr[mid])
+            if arr[mid] < arr[mid + 1] and arr[mid] > arr[mid-1]:
+                l = mid + 1
+            elif arr[mid] > arr[mid + 1] and arr[mid] < arr[mid-1]:
+                r = mid - 1
+            else:
+                return mid 
+        return mid 
+```
+
+[剑指 Offer II 070. 排序数组中只出现一次的数字](https://leetcode.cn/problems/skFtm2/)
+
+```python
+class Solution:
+    def singleNonDuplicate(self, nums: List[int]) -> int:
+        n = len(nums)
+        l, r = 0, n - 1
+        while l < r:
+            mid = (l + r) // 2
+            if nums[mid] == nums[mid ^ 1]:
+                l = mid + 1
+            else:
+                r = mid 
+        return nums[l]
+```

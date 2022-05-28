@@ -3490,3 +3490,141 @@ class Solution:
                 r = mid 
         return nums[l]
 ```
+
+
+## 第 24 天 二分查找
+
+[剑指 Offer II 071. 按权重生成随机数](https://leetcode.cn/problems/cuyjEf/)
+
+```python
+import itertools
+class Solution:
+
+    def __init__(self, w: List[int]):
+        self.pre = list(itertools.accumulate(w))
+        self.total = sum(w)
+
+    def pickIndex(self) -> int:
+        x = random.randint(1, self.total)
+        return bisect.bisect_left(self.pre, x)
+
+# Your Solution object will be instantiated and called as such:
+# obj = Solution(w)
+# param_1 = obj.pickIndex()
+```
+
+[剑指 Offer II 072. 求平方根](https://leetcode.cn/problems/jJ0w9p/)
+
+三种方法：
+
+- 二分法
+- 袖珍计算器：利用对数
+- 牛顿接近
+
+```python
+class Solution:
+    def mySqrt(self, x: int) -> int:
+        l, r, ans = 0, x, -1
+        while l <= r:
+            mid = (l + r) // 2
+            if mid * mid <= x:
+                ans = mid # 不断得到最接近的答案
+                l = mid + 1
+            else:
+                r = mid - 1
+        return ans
+```
+
+```python
+class Solution:
+    def mySqrt(self, x: int) -> int:
+        if x == 0: return 0
+        ans = int(math.exp(0.5 * math.log(x)))
+        return ans + 1 if (ans + 1) ** 2 <= x else ans 
+```
+
+```python
+class Solution:
+    def mySqrt(self, x: int) -> int:
+        if x == 0:
+            return 0
+        
+        C, x0 = float(x), float(x)
+        while True:
+            xi = 0.5 * (x0 + C / x0)
+            if abs(x0 - xi) < 1e-7:
+                break
+            x0 = xi
+        
+        return int(x0)
+```
+
+[剑指 Offer II 073. 狒狒吃香蕉](https://leetcode.cn/problems/nZZqjQ/)
+
+```python
+class Solution:
+    def minEatingSpeed(self, piles: List[int], h: int) -> int:
+        # 从 1 到 max 作为速度k的备选集，在这里面用二分法进行寻找
+        self.piles = piles
+        m = max(piles)
+        l, r = 1, m
+        def count(k): # 在 piles 里用k计算吃完的时间
+            c = 0
+            for i in self.piles:
+                tmp = i // k
+                c += tmp 
+                if tmp * k < i:
+                    c += 1
+            return c 
+        
+        ans = m
+        while l <= r:
+            mid = (l + r)>>1
+            if count(mid) <= h:
+                ans = mid 
+                r = mid - 1
+            else:
+                l = mid + 1
+        return ans 
+```
+
+
+## 第 25 天 排序
+
+[剑指 Offer II 074. 合并区间](https://leetcode.cn/problems/SsGoHC/)
+
+```python
+class Solution:
+    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+        n = len(intervals)
+        if n == 1:
+            return intervals
+        curr = sorted(intervals, key = lambda x: x[0])
+        ans = [curr[0], ]
+        for i in range(1, n):
+            last = ans[-1][1]
+            if curr[i][0] <= last:
+                tmp = ans.pop()
+                ans.append([tmp[0], max(tmp[1], curr[i][1])])
+            else:
+                ans.append(curr[i])
+        return ans
+```
+
+[剑指 Offer II 075. 数组相对排序](https://leetcode.cn/problems/0H97ZC/)
+```python
+class Solution:
+    def relativeSortArray(self, arr1: List[int], arr2: List[int]) -> List[int]:
+        c = collections.Counter(arr1)
+        ans = list()
+        for i in arr2:
+            for _ in range(c[i]):
+                ans.append(i)
+        others = sorted(list(set(arr1) - set(arr2)))
+        for j in others:
+            for _ in range(c[j]):
+                ans.append(j)
+        return ans 
+```
+
+

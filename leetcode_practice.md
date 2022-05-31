@@ -3634,5 +3634,275 @@ class Solution:
 
 [剑指 Offer II 078. 合并排序链表](https://leetcode.cn/problems/vvXgSW/)
 
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def mergeKLists(self, lists: List[ListNode]) -> ListNode:
+        if lists == []:
+            return None
+        def merge(head1, head2):
+            tmp1, tmp2 = head1, head2 
+            res = ListNode(0)
+            tmp = res
+            while tmp1 and tmp2:
+                if tmp1.val <= tmp2.val:
+                    tmp.next = tmp1 
+                    tmp1 = tmp1.next
+                else:
+                    tmp.next = tmp2 
+                    tmp2 = tmp2.next
+                tmp = tmp.next 
+            if tmp1:
+                tmp.next = tmp1 
+            elif tmp2:
+                tmp.next = tmp2 
+            return res.next 
+        n = len(lists)
+        if n <= 1:
+            return lists[0] if n == 1 else []
+        ans = lists.pop()
+        n -= 1
+        while n:
+            tmp = lists.pop()
+            ans = merge(ans, tmp)
+            n -= 1
+        
+        return ans 
+```
+
+## 第 27 天 回溯法
+
+[剑指 Offer II 079. 所有子集](https://leetcode.cn/problems/TVdhkn/)
+
+```python
+class Solution:
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        # 1. 归纳
+        # ans = [[],]
+        # for n in nums:
+        #     ans += [last + [n,] for last in ans ]
+        # return ans 
+
+        # 2. 二进制
+        # tmp, ans = [], []
+        # n = len(nums)
+        # for mask in range(1<<n):
+        #     tmp = []
+        #     for i in range(n):
+        #         if mask & 1 << i:
+        #             tmp.append(nums[i])
+        #     ans.append(tmp)
+        # return ans 
+
+        # 3. dfs
+        n = len(nums)
+        tmp, ans = [], []
+
+        def dfs(idx, arr):
+            if idx == len(arr):
+                # print('b',ans)
+                ans.append(list(tmp)) # 直接append(tmp)是接上了tmp的引用位置而非当下数组，到最后tmp是pop完变空，所以ans会变成若干个空的数组之合并。所以必须要写list(*)
+                # print('a',ans)
+                return 
+            # 选择idx加入
+            tmp.append(arr[idx])
+            dfs(idx + 1, arr)
+            tmp.pop() # 回溯
+            # 不选择idx加入
+            dfs(idx + 1, arr)
+
+        dfs(0, nums)
+        return ans
+```
+
+[剑指 Offer II 080. 含有 k 个元素的组合](https://leetcode.cn/problems/uUsW3B/)
+
+```python
+class Solution:
+    def combine(self, n: int, k: int) -> List[List[int]]:
+        tmp, ans = [], []
+        def dfs(idx, arr):
+            if len(tmp)==k:
+                ans.append(list(tmp))
+                return 
+            # select 
+            if idx == n:
+                return 
+            # print(idx)
+            tmp.append(arr[idx]+1)
+            dfs(idx+1, arr)
+            tmp.pop()
+            # don't select
+            dfs(idx+1, arr)
+        
+        dfs(0, list(range(n)))
+        return ans 
+```
+
+
+[剑指 Offer II 081. 允许重复选择元素的组合](https://leetcode.cn/problems/Ygoe9J/)
+
+- 自己的解法，含去重，太慢了 
+  
+执行用时：
+400 ms
+, 在所有 Python3 提交中击败了
+5.04%
+的用户
+```python
+class Solution:
+    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
+        tmp, ans = [], []
+        def dfs(tar, arr): # 有一个tar的目标
+            if tar == 0:
+                if sorted(list(tmp)) not in ans:
+                    ans.append(sorted(list(tmp)))
+                return 
+            if tar < 0:
+                return 
+            for i in arr:
+                tmp.append(i)
+                dfs(tar - i, arr)
+                tmp.pop()
+        
+        dfs(target, candidates)
+        return ans
+```
+
+- 改进版：不用循环之前的值 
+  
+执行用时：
+76 ms
+, 在所有 Python3 提交中击败了
+53.60%
+的用户
+```python
+class Solution:
+    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
+        tmp, ans = [], []
+        def dfs(tar, arr): # 有一个tar的目标
+            if tar == 0:
+                ans.append(list(tmp))
+                return 
+            if tar < 0:
+                return 
+            for i,j in enumerate(arr):
+                tmp.append(j)
+                dfs(tar - j, arr[i::])
+                tmp.pop()
+        
+        dfs(target, candidates)
+        return ans
+```
+
+## 第 28 天 回溯法
+
+[剑指 Offer II 082. 含有重复元素集合的组合](https://leetcode.cn/problems/4sjJUc/)
+
+
+```python
+class Solution:
+    def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
+        def dfs(pos: int, rest: int):
+            nonlocal sequence
+            if rest == 0:
+                ans.append(sequence[:])
+                return
+            if pos == len(freq) or rest < freq[pos][0]:
+                return
+            
+            dfs(pos + 1, rest) # 即不选择当前的pos的数字
+
+            most = min(rest // freq[pos][0], freq[pos][1])
+            for i in range(1, most + 1):
+                sequence.append(freq[pos][0]) # 每增加i，增添一个数
+                dfs(pos + 1, rest - i * freq[pos][0]) 
+            sequence = sequence[:-most] # 回溯到没有most个数的时候
+        
+        freq = sorted(collections.Counter(candidates).items())
+        ans = list()
+        sequence = list()
+        dfs(0, target) # 这里的 pos 是dict（freq）而非candicates里面的位置
+        return ans
+```
+
+[剑指 Offer II 083. 没有重复元素集合的全排列](https://leetcode.cn/problems/VvJkup/)
+
+```python
+class Solution:
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        ans, tmp = [], []
+        def dfs(selected, arr):
+            if len(selected) == len(arr):
+                ans.append(list(tmp))
+                return 
+            for i, j in enumerate(arr):
+                if i not in selected:
+                    selected.append(i)
+                    tmp.append(j)
+                    dfs(list(selected), arr)
+                    selected.pop()
+                    tmp.pop()
+
+        dfs([], nums)
+        return ans 
+```
+
+[剑指 Offer II 084. 含有重复元素集合的全排列](https://leetcode.cn/problems/7p8L0Z/)
+
+执行用时：
+1284 ms
+, 在所有 Python3 提交中击败了
+5.18%
+的用户
+
+```python
+class Solution:
+    def permuteUnique(self, nums: List[int]) -> List[List[int]]:
+        ans, tmp = [], []
+        def dfs(selected, arr):
+            if len(selected) == len(arr) and tmp not in ans: # 增加该部分进行判断
+                ans.append(list(tmp))
+                return 
+            for i, j in enumerate(arr):
+                if i not in selected:
+                    selected.append(i)
+                    tmp.append(j)
+                    dfs(list(selected), arr)
+                    selected.pop()
+                    tmp.pop()
+
+        dfs([], nums)
+        return ans 
+```
+
+```python
+class Solution:
+    def permuteUnique(self, nums: List[int]) -> List[List[int]]:
+        if not nums:
+            return []
+        def find(li,u):
+            if len(path) == len(li):
+                ans.append(path[:])
+                return 
+            for i in range(0,len(li)):
+                if not u[i]:
+                    if i > 0 and li[i] == li[i-1] and not u[i-1]:
+                        continue
+                    u[i] = 1
+                    path.append(li[i])
+                    find(li,u)
+                    path.pop()
+                    u[i] = 0
+        ans = []
+        path = []
+        use = [0]*len(nums)
+        find(sorted(nums),use)
+        return ans
+```
 
 

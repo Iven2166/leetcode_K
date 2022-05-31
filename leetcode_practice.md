@@ -3905,4 +3905,98 @@ class Solution:
         return ans
 ```
 
+## 第 29 天 回溯法
+
+[剑指 Offer II 085. 生成匹配的括号](https://leetcode.cn/problems/IDBivT/)
+
+```python
+class Solution:
+    def generateParenthesis(self, n: int) -> List[str]:
+        self.ans = []
+        tmp = ""
+        def dfs(tmp, curr):
+            if len(tmp) == n * 2:
+                if curr == 0:
+                    self.ans.append(tmp)
+                return 
+            if curr > 0:
+                tmp += ")"
+                dfs(tmp, curr - 1)
+                tmp = tmp[0:-1] + "("
+                dfs(tmp, curr + 1)
+            elif curr == 0:
+                tmp += "("
+                dfs(tmp, curr + 1)
+
+        dfs("", 0)
+        return self.ans
+```
+
+[剑指 Offer II 086. 分割回文子字符串](https://leetcode.cn/problems/M99OJA/)
+
+```python
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        ans = []
+        n = len(s)
+        def is_partition(word):
+            return True if word == word[::-1] and len(word)>0 else False
+
+        def dfs(idx, tmp, curr):
+            nonlocal ans
+            if idx == n:
+                if is_partition(curr):
+                    tmp.append(curr)
+                    ans.append(tmp[:])
+                    tmp.pop()
+                return 
+            curr += s[idx]
+            dfs(idx + 1, tmp, curr)
+            if is_partition(curr):
+                tmp.append(curr)
+                curr = ''
+                dfs(idx + 1, tmp, curr)
+                tmp.pop()
+        
+        dfs(0, [], '')
+        return ans
+```
+
+[剑指 Offer II 087. 复原 IP](https://leetcode.cn/problems/0on3uN/)
+
+```python
+class Solution:
+    def restoreIpAddresses(self, s: str) -> List[str]:
+        n = len(s)
+        def is_partofip(word):
+            if word == '':
+                return False
+            if word.startswith('0'):
+                return True if word == '0' else False
+            return True if int(word) > 0 and int(word) <= 255 else False
+        
+        def dfs(idx, tmp, curr):
+            nonlocal ans
+            if idx == n:
+                if len(tmp) == 4 and curr == '':
+                    ans.append('.'.join(tmp[:]))
+                return 
+            if len(tmp) == 4 and curr == '':
+                return 
+
+            curr += s[idx]
+            if is_partofip(curr):
+                dfs(idx + 1, tmp, curr)
+                tmp.append(curr)
+                dfs(idx + 1, tmp, '')
+                tmp.pop()
+            else:
+                return 
+
+        ans = []
+        dfs(0, [], '')
+        return ans
+```
+
+
 

@@ -31,6 +31,8 @@
     - 动态规划
         - [96. 不同的二叉搜索树 (mid)](https://leetcode-cn.com/problems/unique-binary-search-trees/)
     
+- 回溯
+    - [473. 火柴拼正方形](https://leetcode.cn/problems/matchsticks-to-square/)
 
 ## 数组
 ### 中等
@@ -244,4 +246,32 @@ class Solution:
         return dp[n]
 ```
 
+## 回溯
+### 中等
 
+[473. 火柴拼正方形](https://leetcode.cn/problems/matchsticks-to-square/)
+
+```python
+class Solution:
+    def makesquare(self, matchsticks: List[int]) -> bool:
+        # 组成的第一个边需要等于 总长度 / 4
+        # 定义：形成一个边的首选项，入选的set(index)，
+        n, s = len(matchsticks), sum(matchsticks)
+        k = s / 4
+        matchsticks.sort(reverse=True)
+        curr = [0] * 4
+        if k != s//4:
+            return False
+        def dfs(idx): 
+            # 满足条件情况，所有火柴用上
+            if idx == n:
+                return True 
+            for i in range(4): # 含义是idx的火柴会轮流尝试放到四条边里
+                curr[i] += matchsticks[idx]
+                if curr[i] <= k and dfs(idx + 1): # 隐含了能够整除的条件
+                    return True 
+                curr[i] -= matchsticks[idx]
+            return False # 如果idx的火柴在四条边均无法放入，则false。事实上，非该种情况，则能够放下四条边，且能整除，则true
+        
+        return dfs(0)
+```

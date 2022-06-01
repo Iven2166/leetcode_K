@@ -3998,5 +3998,75 @@ class Solution:
         return ans
 ```
 
+## 第 30 天 动态规划
+
+[剑指 Offer II 088. 爬楼梯的最少成本](https://leetcode.cn/problems/GzCJIP/)
+
+```python
+class Solution:
+    def minCostClimbingStairs(self, cost: List[int]) -> int:
+        n = len(cost)
+        if n <= 2:
+            return min(cost)
+        # 44 ms	15 MB
+        # dp = [0] * n
+        # for i in range(2, n):
+        #     dp[i] = min(dp[i - 1] + cost[i - 1], dp[i - 2] + cost[i-2])
+        # return min(dp[-1]+cost[-1], dp[-2]+cost[-2])
+
+        # 执行用时：36 ms, 在所有 Python3 提交中击败了93.69%的用户
+        dp, dp1, dp2 = 0, 0, 0
+        for i in range(2, n):
+            dp = min(dp1 + cost[i-1], dp2 + cost[i-2])
+            dp1, dp2 = dp, dp1 
+        return min(dp1+cost[-1], dp2+cost[-2])
+```
+
+[剑指 Offer II 089. 房屋偷盗](https://leetcode.cn/problems/Gu0c2T/)
+
+```python
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        n = len(nums)
+        if n <= 2:
+            return max(nums)
+        dp = [0] * n
+        dp[0], dp[1], dp[2] = nums[0], nums[1], max(nums[0]+nums[2], nums[1])
+        for i in range(3, n):
+            dp[i] = max(max(dp[i-2], dp[i-3]) + nums[i], dp[i-1])
+        return dp[-1]
+```
+
+[剑指 Offer II 090. 环形房屋偷盗](https://leetcode.cn/problems/PzWKhm/)
+
+```python
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        def robRange(start: int, end: int) -> int:
+            first = nums[start]
+            second = max(nums[start], nums[start + 1])
+            for i in range(start + 2, end + 1):
+                first, second = second, max(first + nums[i], second)
+            return second
+        
+        length = len(nums)
+        if length == 1:
+            return nums[0]
+        elif length == 2:
+            return max(nums[0], nums[1])
+        else:
+            return max(robRange(0, length - 2), robRange(1, length - 1))
+        
+# 作者：LeetCode-Solution
+# 链接：https://leetcode.cn/problems/PzWKhm/solution/huan-xing-fang-wu-tou-dao-by-leetcode-so-p3ev/
+# 来源：力扣（LeetCode）
+# 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+```
+
+## 第 31 天 动态规划
+
+[剑指 Offer II 091. 粉刷房子](https://leetcode.cn/problems/JEj789/)
+
+
 
 

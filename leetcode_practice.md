@@ -4118,5 +4118,56 @@ class Solution:
 
 [剑指 Offer II 093. 最长斐波那契数列](https://leetcode.cn/problems/Q91FMA/)
 
+```python
+class Solution:
+    def lenLongestFibSubseq(self, arr: List[int]) -> int:
+        # 条件：严格递增，没有重复值；需要为斐波那契数列
+        # 难处在于，idx所处的值可能存在于序列中，比如 8是3、5、8也可以是1、7、8
+        # 如果dp[i][j]作为答案，则是i和j作为尾部两个数字的序列的答案；和前面的dp[j][k=i-j]有关系，形成动态规划
+        # dp[8][5] = dp[5][3] + 1, dp[8][7] = dp[7][1] + 1：为方便表示，[]里的值是idx所处的值
+        d = dict()
+        for i, j in enumerate(arr):
+            d[j] = i # store the index 
+        n = len(arr)
+        res = 0
+        dp = [[2 for _ in range(n)] for _ in range(n) ]
+        for i in range(1, n):
+            for j in range(i):
+                curr = arr[i] - arr[j]
+                if curr in d:
+                    k = d[curr]
+                    dp[i][j] = dp[j][k] + 1 if k < j else 2
+                    res = max(res, dp[i][j])
+        return res if res > 2 else 0
+```
+
+## 第 32 天 动态规划
+
+[剑指 Offer II 094. 最少回文分割](https://leetcode.cn/problems/omKAoA/)
+
+```python
+class Solution:
+    def minCut(self, s: str) -> int:
+        n = len(s)
+        g = [[True for _ in range(n)] for _ in range(n)]
+
+        for i in range(n-1, -1, -1):
+            for j in range(i+1, n):
+                g[i][j] = s[i]==s[j] and g[i+1][j-1]
+        
+        f = [float("inf")] * n
+        for i in range(n):
+            if g[0][i]:
+                f[i] = 0 
+            else:
+                for j in range(i):
+                    if g[j+1][i]:
+                        f[i] = min(f[j] + 1, f[i])
+        return f[-1]
+```
+
+
+
+
 
 

@@ -4067,6 +4067,56 @@ class Solution:
 
 [剑指 Offer II 091. 粉刷房子](https://leetcode.cn/problems/JEj789/)
 
+执行用时：
+32 ms
+, 在所有 Python3 提交中击败了
+97.27%
+的用户
+内存消耗：
+15.1 MB
+, 在所有 Python3 提交中击败了
+16.64%
+的用户
+
+```python
+class Solution:
+    def minCost(self, costs: List[List[int]]) -> int:
+        n = len(costs)
+        # dp = [[0 for _ in range(3) ] for _ in range(n)]
+        # for i in range(n):
+        #     if i == 0:
+        #         dp[i] = costs[0][:]
+        #     else:
+        #         for j in range(3):
+        #             dp[i][j] = min(dp[i-1][(j+1)%3], dp[i-1][(j+2)%3]) + costs[i][j]
+        # return min(dp[-1])
+        dp0, dp1, dp2 = costs[0]
+        for i in range(n):
+            if i > 0:
+                dp0, dp1, dp2 = min(dp1, dp2) + costs[i][0], min(dp0, dp2) + costs[i][1], min(dp0, dp1) + costs[i][2]
+        return min(dp0,dp1,dp2)
+```
+
+[剑指 Offer II 092. 翻转字符](https://leetcode.cn/problems/cyJERH/)
+
+- 关键在于找到动态前后的依赖条件。
+  - 由于是递增，所以需要 01、00、11 这三种，而以0为结尾的，要求之前的序列也是以0为结尾
+  - 那么i为结尾的序列和i-1为结尾的序列就联系起来了
+- 参考：https://leetcode.cn/problems/cyJERH/solution/jian-zhi-offer-2-mian-shi-ti-92-shu-zhon-4oz8/
+
+```python
+class Solution:
+    def minFlipsMonoIncr(self, s: str) -> int:
+        if len(s) == 1:
+            return 0
+        n = len(s)
+        dp0, dp1 = int(s[0]=='1'), int(s[0]=='0')
+        for i in range(1, n):
+            dp0, dp1 = dp0 + int(s[i] == '1'), min(dp0, dp1) + int(s[i] == '0')
+        return min(dp1, dp0)
+```
+
+[剑指 Offer II 093. 最长斐波那契数列](https://leetcode.cn/problems/Q91FMA/)
 
 
 

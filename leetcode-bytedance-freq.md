@@ -1,10 +1,23 @@
 
+按照"出题指数"刷（https://leetcode.cn/company/bytedance/problemset/）
+
+中等难度
+
 - 链表
-  - [2. 两数相加](https://leetcode.cn/problems/add-two-numbers/)
-- 动态规划
-  - [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
-  - [5. 最长回文子串](https://leetcode.cn/problems/longest-palindromic-substring/)
+    - [2. 两数相加](https://leetcode.cn/problems/add-two-numbers/)
     
+- 动态规划
+    - [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
+    - [5. 最长回文子串](https://leetcode.cn/problems/longest-palindromic-substring/)
+    
+- 双指针
+    - [15. 三数之和](https://leetcode.cn/problems/3sum/)
+    - [11. 盛最多水的容器](https://leetcode.cn/problems/container-with-most-water/)
+    
+- 回溯法
+    - [46. 全排列](https://leetcode.cn/problems/permutations/)
+    
+
 
 
 
@@ -109,4 +122,81 @@ class Solution:
                     res = (i, j)
                     length = j - i + 1
         return s[res[0]: res[1]+1]
+```
+
+[15. 三数之和](https://leetcode.cn/problems/3sum/)
+
+```python
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        ans = list()
+        n = len(nums)
+        if n <= 2:
+            return list()
+        nums.sort()
+        l, r = 0, n - 1
+        for first in range(n):
+            if first > 0 and nums[first-1] == nums[first]:
+                continue # 继续往前找first不同的数
+            elif nums[first] > 0: # 加上该句，时间从 44%->80%
+                break 
+            third = n - 1
+            target = - nums[first]
+            for second in range(first + 1, n):
+                if second > first + 1 and nums[second-1] == nums[second]:
+                    continue
+                while third > second and nums[third] + nums[second] > target:
+                    third -= 1
+                if second == third:
+                    break
+                if nums[second] + nums[third] == target:
+                    ans.append([ nums[first], nums[second], nums[third] ])
+        return ans 
+```
+
+[11. 盛最多水的容器](https://leetcode.cn/problems/container-with-most-water/)
+
+
+- 解法：反证法：hl < hr时，就算r--，hr变大变小，因为hl是min，所以面积肯定变小，则应该l++
+
+```python
+class Solution:
+    def maxArea(self, height: List[int]) -> int:
+        ans = 0
+        n = len(height)
+        l, r = 0, n - 1
+        while l < r:
+            hl, hr = height[l], height[r]
+            h = min(hl, hr )
+            ans = max(h * (r - l), ans)
+            if hl < hr :
+                l += 1
+            else:
+                r -= 1 
+        return ans
+```
+
+[46. 全排列](https://leetcode.cn/problems/permutations/)
+
+```python
+class Solution:
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        n = len(nums)
+        ans = list()
+        visit = [0 for _ in range(n)] 
+        def dfs(visit, curr):
+            nonlocal ans 
+            if sum(visit) == n:
+                ans.append(list(curr))
+                return 
+            for i, j in enumerate(visit):
+                if j == 0:
+                    visit[i] = 1
+                    curr.append(nums[i])
+                    dfs(visit, curr)
+                    visit[i] = 0
+                    curr.pop()
+        
+        dfs(visit, list())
+        return ans 
 ```

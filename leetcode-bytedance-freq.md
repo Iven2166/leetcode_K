@@ -13,7 +13,8 @@
 - 双指针
     - [15. 三数之和](https://leetcode.cn/problems/3sum/)
     - [11. 盛最多水的容器](https://leetcode.cn/problems/container-with-most-water/)
-    
+    - [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)
+
 - 回溯法
     - [46. 全排列](https://leetcode.cn/problems/permutations/)
     
@@ -199,4 +200,46 @@ class Solution:
         
         dfs(visit, list())
         return ans 
+```
+
+[33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)
+
+```python
+class Solution:
+    def search(self, nums: List[int], target: int) -> int:
+        n = len(nums)
+        if len(nums)==1:
+            return 0 if nums[0]==target else -1
+        if len(nums)==2:
+            return 0 if nums[0]==target else 1 if nums[1]==target else -1
+        l, r = 0, n - 1
+        while l < r:
+            m = (r + l) >> 1
+            a, b, c = nums[l], nums[m], nums[r]
+            # print(a, b, c)
+            # 如果没有明显的l和r的m+-项，则需要判断a、c是否等于target，且l<r；要么就需要写好m+-1的变更条件，才要l<=r
+            if b == target:
+                return m 
+            if a == target:
+                return l 
+            if c == target:
+                return r
+            if c < a and b <= c:
+                if target < b or target > a:
+                    r = m - 1
+                else:
+                    l = m
+            elif c < a and b >= a:
+                if target > b or target < c:
+                    l = m + 1
+                else:
+                    r = m
+            elif a < c:
+                if target > b:
+                    l = m + 1
+                else:
+                    r = m - 1
+        if b == target:
+            return m 
+        return -1
 ```

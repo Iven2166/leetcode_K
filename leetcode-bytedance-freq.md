@@ -18,7 +18,8 @@
 - 回溯法
     - [46. 全排列](https://leetcode.cn/problems/permutations/)
     
-
+- 排序
+    - [56. 合并区间](https://leetcode.cn/problems/merge-intervals/)
 
 
 
@@ -243,3 +244,47 @@ class Solution:
             return m 
         return -1
 ```
+
+
+[56. 合并区间](https://leetcode.cn/problems/merge-intervals/)
+
+```python
+class Solution:
+    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+        ans = list()
+        intervals.sort(key = lambda x: x[0])
+        for i, j in enumerate(intervals):
+            if len(ans)==0 or j[0] > ans[-1][1]:
+                ans.append(j)
+            else:
+                ans[-1][1] = max(ans[-1][1],j[1])
+        return ans 
+```
+
+[31. 下一个排列](https://leetcode.cn/problems/next-permutation/)
+
+- [参考](https://leetcode.cn/problems/next-permutation/solution/xia-yi-ge-pai-lie-by-leetcode-solution/)
+
+```python
+class Solution:
+    def nextPermutation(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        n = len(nums)
+        i = n - 2
+        while i >= 0 and nums[i] >= nums[i+1]:
+            i -= 1
+        if i >= 0:
+            j = len(nums) - 1
+            while j >= 0 and nums[i] >= nums[j]:
+                j -= 1
+            nums[i], nums[j] = nums[j], nums[i]
+        
+        i, j = i + 1, len(nums) - 1
+        while i < j:
+            nums[i], nums[j] = nums[j], nums[i]
+            i += 1
+            j -= 1
+```
+

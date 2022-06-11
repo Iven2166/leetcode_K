@@ -17,6 +17,7 @@
 
 - 回溯法
     - [46. 全排列](https://leetcode.cn/problems/permutations/)
+    - [200. 岛屿数量](https://leetcode.cn/problems/number-of-islands/)
     
 - 排序
     - [56. 合并区间](https://leetcode.cn/problems/merge-intervals/)
@@ -288,3 +289,67 @@ class Solution:
             j -= 1
 ```
 
+[200. 岛屿数量](https://leetcode.cn/problems/number-of-islands/)
+
+```python
+class Solution:
+    def numIslands(self, grid: List[List[str]]) -> int:
+        
+        def dfs(last_dir, curr_dir, i, j):
+            # nonlocal self.visited
+            if (last_dir == 'down' and curr_dir == 'up') or (last_dir == 'up' and curr_dir == 'down'):
+                return 
+            if (last_dir == 'right' and curr_dir == 'left') or (last_dir == 'left' and curr_dir == 'right'):
+                return 
+            # last_dir 为上次的方向
+            if i >= m or j >= n or i < 0 or j < 0:
+                return 
+            if grid[i][j] == "1":
+                if self.visited[i][j] == 1:
+                    return 
+                elif self.visited[i][j] == 0:
+                    self.visited[i][j] = 1
+            
+            if grid[i][j] == "0":
+                return 
+            
+            dfs(curr_dir, 'down', i+1, j)
+            dfs(curr_dir, 'up', i-1, j)
+            dfs(curr_dir, 'right', i, j+1)
+            dfs(curr_dir, 'left', i, j-1)
+        
+        m, n = len(grid), len(grid[0])
+        self.visited = [[0 for _ in range(n)] for _ in range(m)]
+        
+        res = 0
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j]=='1' and self.visited[i][j]==0:
+                    dfs(None, None, i, j)
+                    res += 1
+        return res 
+```
+
+- 直接修改grid[i][j]使得其变成0（水）
+
+```python
+class Solution:
+    def dfs(self, grid, x, y):
+        grid[x][y] = '0'
+        nr, nc = len(grid), len(grid[0])
+        for i,j in [(x-1,y), (x+1,y), (x, y-1), (x, y+1)]:
+            if 0<=i<nr and 0<=j<nc and grid[i][j]=="1":
+                self.dfs(grid, i, j)
+
+    def numIslands(self, grid: List[List[str]]) -> int:
+        nr = len(grid)
+        if nr==0: return 0
+        nc = len(grid[0])
+        num = 0
+        for r in range(nr):
+            for c in range(nc):
+                if grid[r][c]=="1":
+                    num += 1
+                    self.dfs(grid, r, c)
+        return num
+```

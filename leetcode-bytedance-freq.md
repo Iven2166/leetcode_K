@@ -468,6 +468,7 @@ class Solution:
 
 - 链表
     - [2. 两数相加](https://leetcode.cn/problems/add-two-numbers/)
+    - [92. 反转链表 II](https://leetcode.cn/problems/reverse-linked-list-ii/)
     
 - 动态规划
     - [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)

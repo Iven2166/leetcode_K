@@ -1,29 +1,6 @@
 
 按照"出题指数"刷（https://leetcode.cn/company/bytedance/problemset/）
 
-中等难度
-
-- 链表
-    - [2. 两数相加](https://leetcode.cn/problems/add-two-numbers/)
-    
-- 动态规划
-    - [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
-    - [5. 最长回文子串](https://leetcode.cn/problems/longest-palindromic-substring/)
-    
-- 双指针
-    - [15. 三数之和](https://leetcode.cn/problems/3sum/)
-    - [11. 盛最多水的容器](https://leetcode.cn/problems/container-with-most-water/)
-    - [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)
-
-- 回溯法
-    - [46. 全排列](https://leetcode.cn/problems/permutations/)
-    - [200. 岛屿数量](https://leetcode.cn/problems/number-of-islands/)
-    
-- 排序
-    - [56. 合并区间](https://leetcode.cn/problems/merge-intervals/)
-
-
-
 
 [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
 
@@ -353,3 +330,162 @@ class Solution:
                     self.dfs(grid, r, c)
         return num
 ```
+
+[22. 括号生成](https://leetcode.cn/problems/generate-parentheses/)
+
+```python
+class Solution:
+    def generateParenthesis(self, n: int) -> List[str]:
+        def dfs(l, k): 
+            nonlocal res 
+            # l 左括号数量 r 右括号数量 k 目前的list
+            if l < 0:
+                return 
+            if len(k) == n * 2:
+                if l == 0:
+                    res.append(''.join(k))
+                return     
+            if l == 0:
+                k.append("(")
+                dfs(l + 1, k)
+                k.pop()
+            elif l > 0:
+                k.append("(")
+                dfs(l + 1, k)
+                k.pop()
+                k.append(")")
+                dfs(l - 1, k)
+                k.pop()
+            
+
+        res = list()
+        dfs(0, [])
+        return res 
+```
+
+[102. 二叉树的层序遍历](https://leetcode.cn/problems/binary-tree-level-order-traversal/)
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def levelOrder(self, root: TreeNode) -> List[List[int]]:
+        if not root: return []
+        res, q = list(), deque([root,])
+        while q:
+            n = len(q)
+            tmp = list()
+            for _ in range(n):
+                curr = q.popleft()
+                tmp.append(curr.val)
+                if curr.left: q.append(curr.left)
+                if curr.right: q.append(curr.right)
+            res.append(tmp)
+        return res 
+```
+
+[199. 二叉树的右视图](https://leetcode.cn/problems/binary-tree-right-side-view/)
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def rightSideView(self, root: Optional[TreeNode]) -> List[int]:
+        if not root: return []
+        res, q = list(), deque([root,])
+        while q:
+            n = len(q)
+            k = 0
+            for _ in range(n):
+                curr = q.popleft()
+                k = curr.val
+                if curr.left: q.append(curr.left)
+                if curr.right: q.append(curr.right)
+            res.append(k)
+        return res 
+```
+
+[92. 反转链表 II](https://leetcode.cn/problems/reverse-linked-list-ii/)
+
+- 参考：https://leetcode.cn/problems/reverse-linked-list-ii/solution/fan-zhuan-lian-biao-ii-by-leetcode-solut-teyq/
+
+```python
+class Solution:
+    def reverseBetween(self, head: ListNode, left: int, right: int) -> ListNode:
+        def reverse_linked_list(head: ListNode):
+            # 也可以使用递归反转一个链表
+            pre = None
+            cur = head
+            while cur:
+                next = cur.next # 1
+                cur.next = pre # 2
+                pre = cur # 3
+                cur = next # 4 
+                # 1、4 是往后走
+
+        # 因为头节点有可能发生变化，使用虚拟头节点可以避免复杂的分类讨论
+        dummy_node = ListNode(-1)
+        dummy_node.next = head
+        pre = dummy_node
+        # 第 1 步：从虚拟头节点走 left - 1 步，来到 left 节点的前一个节点
+        # 建议写在 for 循环里，语义清晰
+        for _ in range(left - 1):
+            pre = pre.next
+
+        # 第 2 步：从 pre 再走 right - left + 1 步，来到 right 节点
+        right_node = pre
+        for _ in range(right - left + 1):
+            right_node = right_node.next
+        # 第 3 步：切断出一个子链表（截取链表）
+        left_node = pre.next
+        curr = right_node.next
+
+        # 注意：切断链接
+        pre.next = None
+        right_node.next = None
+
+        # 第 4 步：同第 206 题，反转链表的子区间
+        reverse_linked_list(left_node)
+        # 第 5 步：接回到原来的链表中
+        pre.next = right_node
+        left_node.next = curr
+        return dummy_node.next
+
+```
+
+
+
+
+中等难度
+
+- 链表
+    - [2. 两数相加](https://leetcode.cn/problems/add-two-numbers/)
+    
+- 动态规划
+    - [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
+    - [5. 最长回文子串](https://leetcode.cn/problems/longest-palindromic-substring/)
+    
+- 双指针
+    - [15. 三数之和](https://leetcode.cn/problems/3sum/)
+    - [11. 盛最多水的容器](https://leetcode.cn/problems/container-with-most-water/)
+    - [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)
+
+- 回溯法
+    - [46. 全排列](https://leetcode.cn/problems/permutations/)
+    - [200. 岛屿数量](https://leetcode.cn/problems/number-of-islands/)
+    - [22. 括号生成](https://leetcode.cn/problems/generate-parentheses/)
+    
+- 排序
+    - [56. 合并区间](https://leetcode.cn/problems/merge-intervals/)
+
+- 二叉树
+    - [102. 二叉树的层序遍历](https://leetcode.cn/problems/binary-tree-level-order-traversal/)
+    - [199. 二叉树的右视图(层序遍历的小改动)](https://leetcode.cn/problems/binary-tree-right-side-view/)

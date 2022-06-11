@@ -416,6 +416,7 @@ class Solution:
 [92. 反转链表 II](https://leetcode.cn/problems/reverse-linked-list-ii/)
 
 - 参考：https://leetcode.cn/problems/reverse-linked-list-ii/solution/fan-zhuan-lian-biao-ii-by-leetcode-solut-teyq/
+![img.png](leet-reverse-linked-list.png)
 
 ```python
 class Solution:

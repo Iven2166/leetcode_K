@@ -1,6 +1,7 @@
 
-按照"出题指数"刷（https://leetcode.cn/company/bytedance/problemset/）
+# 按照"出题指数"刷（https://leetcode.cn/company/bytedance/problemset/）
 
+目录在最后
 
 [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
 
@@ -462,10 +463,178 @@ class Solution:
 
 ```
 
+[54. 螺旋矩阵](https://leetcode.cn/problems/spiral-matrix/)
+
+- 模拟方法
+
+```python
+class Solution:
+    def spiralOrder(self, matrix: List[List[int]]) -> List[int]:
+        m, n = len(matrix), len(matrix[0])
+        if m == 1:
+            return matrix[0]
+        if n == 1:
+            return [i[0] for i in matrix]
+
+        res = []
+        k = m * n
+        # direction = ['right', 'down', 'left', 'up']
+        d = 0 
+        i, j = 0, 0
+        visited = [[0 for _ in range(n)] for _ in range(m)]
+        while k:
+            # 符合加入的条件，加入后，改变位置的值为已访问过标记
+            # print(i, j, d, matrix[i][j])
+            if 0 <= i < m and 0 <= j < n and visited[i][j] == 0:
+                res.append(matrix[i][j])
+                visited[i][j] = 1
+                k -= 1
+            if d % 4 == 0:
+                if 0 <= i < m and 0 <= j + 1< n and visited[i][j+1] == 0:
+                    j += 1
+                else:
+                    i += 1
+                    d += 1
+            elif d % 4 == 1:
+                if 0 <= i + 1< m and 0 <= j < n and visited[i+1][j] == 0:
+                    i += 1
+                else:
+                    j -= 1
+                    d += 1
+            elif d % 4 == 2:
+                if 0 <= i < m and 0 <= j - 1 < n and visited[i][j-1] == 0:
+                    j -= 1
+                else:
+                    i -= 1
+                    d += 1
+            elif d % 4 == 3:
+                if 0 <= i - 1 < m and 0 <= j< n and visited[i-1][j] == 0:
+                    i -= 1
+                else:
+                    j += 1
+                    d += 1
+            
+        return res 
+```
+
+- 极简
+
+```python
+class Solution:
+    def spiralOrder(self, matrix: List[List[int]]) -> List[int]:
+        res = []
+
+        while matrix:
+            # 第一层
+            res += matrix.pop(0)
+            # 剩余矩阵逆时针旋转90度
+            matrix = list(zip(*matrix))[::-1]
+        
+        return res 
+```
+
+[143. 重排链表](https://leetcode.cn/problems/reorder-list/)
+
+- 借用dict实现存储位置 
+  
+执行用时：
+68 ms
+, 在所有 Python3 提交中击败了
+94.72%
+的用户
+内存消耗：
+24.1 MB
+, 在所有 Python3 提交中击败了
+6.21%
+的用户
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reorderList(self, head: ListNode) -> None:
+        """
+        Do not return anything, modify head in-place instead.
+        """
+        curr = head 
+        d = dict()
+        k = 0
+        while curr:
+            d[k] = curr 
+            curr = curr.next
+            k += 1
+        if k == 2:
+            return head
+        if k % 2 == 1:
+            for i in range(k//2):
+                d[i].next = d[k-i-1]
+                d[i+1].next = None 
+                d[k-i-1].next = d[i+1]
+        else:
+            for i in range(k//2-1):
+                d[i].next = d[k-i-1]
+                d[i+1].next = None 
+                d[k-i-1].next = d[i+1]
+            d[k-i-2].next = None 
+            d[i+1].next = d[k-i-2]
+```
+
+- 使用三种方法：找中点、旋转链表、合并链表（炫技？？？）
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reorderList(self, head: ListNode) -> None:
+        """
+        Do not return anything, modify head in-place instead.
+        """
+        if not head: return 
+
+        mid = self.findMidNode(head)
+        left = head 
+        right = mid.next 
+        mid.next = None 
+        right = self.reverseNode(right)
+        self.mergeNode(left, right)
+
+    def findMidNode(self, head):
+        slow, fast = head, head 
+        while fast.next and fast.next.next:
+            slow = slow.next 
+            fast = fast.next.next 
+        return slow 
+    
+    def reverseNode(self, head):
+        pre = None 
+        curr = head 
+        while curr:
+            next = curr.next 
+            curr.next = pre 
+            pre = curr 
+            curr = next 
+        return pre 
+    
+    def mergeNode(self, left, right):
+        while left and right:
+            t1, t2 = left.next, right.next 
+            left.next = right 
+            left = t1 
+            right.next = left 
+            right = t2
+```
 
 
 
 中等难度
+
+能够归纳到算法里的归纳到算法，不能则归纳到数据结构里。
 
 - 链表
     - [2. 两数相加](https://leetcode.cn/problems/add-two-numbers/)
@@ -491,3 +660,7 @@ class Solution:
 - 二叉树
     - [102. 二叉树的层序遍历](https://leetcode.cn/problems/binary-tree-level-order-traversal/)
     - [199. 二叉树的右视图(层序遍历的小改动)](https://leetcode.cn/problems/binary-tree-right-side-view/)
+
+- 矩阵
+    - [54. 螺旋矩阵](https://leetcode.cn/problems/spiral-matrix/)
+  

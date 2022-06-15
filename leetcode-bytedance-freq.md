@@ -630,6 +630,64 @@ class Solution:
             right = t2
 ```
 
+[198. 打家劫舍](https://leetcode.cn/problems/house-robber/)
+
+```python 
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        # dp 
+        n = len(nums)
+        # dp = [0 for _ in range(n)]
+        # for i, j in enumerate(nums):
+        #     if i < 2:
+        #         dp[i] = max(nums[0:i+1])
+        #     else:
+        #         dp[i] = max(dp[i-1], dp[i-2]+j)
+        # 90%
+        dp_pre1, dp_pre2 = 0, 0
+        for i, j in enumerate(nums):
+            if i >= 2:
+                dp = max(dp_pre1, dp_pre2 + j)
+                dp_pre1, dp_pre2 = dp, dp_pre1
+            elif i == 1:
+                dp = max(j, dp_pre1)
+                dp_pre1, dp_pre2 = dp, dp_pre1
+            elif i == 0:
+                dp = j
+                dp_pre1 = dp 
+        return dp
+```
+
+[105. 从前序与中序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)
+
+- 递归解法 + dict保存位置
+- 迭代解法，难懂
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> TreeNode:
+        # 62%
+        if not preorder and not inorder:
+            return None 
+        n1, n2 = len(preorder), len(inorder)
+        if n1 == 1 and n2 == 1:
+            return TreeNode(val = preorder[0])
+        elif n1 > 1:
+            root_val = preorder[0]
+            root = TreeNode(val = root_val)
+            root_index = inorder.index(root_val)
+            root.left = self.buildTree(preorder[1:root_index+1], inorder[0:root_index])
+            root.right = self.buildTree(preorder[root_index+1:], inorder[root_index+1:])
+            return root
+```
+
+
 
 
 中等难度
@@ -643,6 +701,7 @@ class Solution:
 - 动态规划
     - [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
     - [5. 最长回文子串](https://leetcode.cn/problems/longest-palindromic-substring/)
+    - [198. 打家劫舍](https://leetcode.cn/problems/house-robber/)
     
 - 双指针
     - [15. 三数之和](https://leetcode.cn/problems/3sum/)

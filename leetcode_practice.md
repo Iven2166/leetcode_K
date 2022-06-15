@@ -4166,6 +4166,22 @@ class Solution:
         return f[-1]
 ```
 
+[剑指 Offer II 095. 最长公共子序列](https://leetcode.cn/problems/qJnOS7/)
+
+```python
+class Solution:
+    def longestCommonSubsequence(self, text1: str, text2: str) -> int:
+        # 最长公共子序列问题是典型的二维动态规划问题
+        n1, n2 = len(text1), len(text2)
+        dp = [[0 for _ in range(n1+1)] for _ in range(n2+1)]
+        for i, ii in enumerate(text1):
+            for j, jj in enumerate(text2):
+                if ii == jj:
+                    dp[j+1][i+1] = dp[j][i] + 1
+                else:
+                    dp[j+1][i+1] = max(dp[j][i+1], dp[j+1][i])
+        return dp[-1][-1]
+```
 
 
 

@@ -4205,6 +4205,209 @@ class Solution:
 
 [剑指 Offer II 097. 子序列的数目](https://leetcode.cn/problems/21dk04/)
 
+- [参考](https://leetcode.cn/problems/21dk04/submissions/)
+- dp设定为末尾的情况
+
+```python
+class Solution:
+    def numDistinct(self, s: str, t: str) -> int:
+        ns, nt = len(s), len(t)
+        if nt > ns:
+            return 0
+        dp = [[0 for _ in range(nt+1)] for _ in range(ns+1)]
+        for i in range(ns+1):
+            dp[i][-1] = 1
+        
+        for i in range(ns-1, -1, -1):
+            for j in range(nt-1, -1, -1):
+                dp[i][j] = dp[i+1][j]
+                if s[i] == t[j]:
+                    dp[i][j] += dp[i+1][j+1]
+        
+        return dp[0][0]
+```
+
+[剑指 Offer II 098. 路径的数目](https://leetcode.cn/problems/2AoeFn/)
+
+- dp 
+- 组合数学：由于要m-1次向下，n-1次向右，所以为m+n-2次里面选择m-1次做向下动作
+
+```python
+class Solution:
+    def uniquePaths(self, m: int, n: int) -> int:
+        dp = [[0] * n for _ in range(m)]
+        dp[0] = [1] * n
+        for i in range(m):
+            dp[i][0] = 1
+        for i in range(1,m):
+            for j in range(1,n):
+                dp[i][j] = dp[i][j-1] + dp[i-1][j]
+        return dp[-1][-1]
+```
+
+[剑指 Offer II 099. 最小路径之和](https://leetcode.cn/problems/0i0mDW/)
+
+
+
+## 第 34 天 动态规划
+
+[剑指 Offer II 100. 三角形中最小路径之和](https://leetcode.cn/problems/IlPe0q/)
+
+```python
+class Solution:
+    def minimumTotal(self, triangle: List[List[int]]) -> int:
+        dp = triangle.copy()
+        for col in range(1, len(dp)):
+            # left-left 
+            dp[col][0] = dp[col-1][0] + triangle[col][0]
+            dp[col][-1] = dp[col-1][-1] + triangle[col][-1]
+        
+        for col in range(1, len(dp)):
+            for row in range(1, len(dp[col])-1):
+                dp[col][row] = min(dp[col-1][row-1], dp[col-1][row]) + triangle[col][row]
+        return min(dp[-1])
+```
+
+
+[剑指 Offer II 101. 分割等和子集](https://leetcode.cn/problems/NUPfPr/)
+
+背包问题：
+- DP：以dp[i][j]表示nums[0:i+1]（以i为结尾）能否满足抽取到和为j的数字子集
+
+```python
+class Solution:
+    def canPartition(self, nums: List[int]) -> bool:
+        s = sum(nums)
+        if s % 2 == 1:
+            return False
+        s2 = s // 2
+        n = len(nums)
+        if max(nums) > s2:
+            return False 
+        dp = [[False for _ in range(s2+1)] for _ in range(n)]
+        
+        # 不选择，能够构成0
+        for i in range(n):
+            dp[i][0] = True 
+        dp[0][nums[0]] = True # 选择第一个
+
+        for i in range(1, n):
+            curr = nums[i]
+            for j in range(1, s2+1):
+                if j >= curr:
+                    dp[i][j] = dp[i-1][j] | dp[i-1][j-curr] # 选择与不选择
+                else:
+                    dp[i][j] = dp[i-1][j]
+        return dp[n-1][s2]
+```
+
+- dfs: 超时
+
+```python
+class Solution:
+    def canPartition(self, nums: List[int]) -> bool:
+        s = sum(nums)
+        if s % 2 == 1:
+            return False
+        s2 = s // 2
+        n = len(nums)
+        
+
+        def dfs(i, curr): 
+            nonlocal res 
+            # curr is a list
+            # choose i
+            # print(curr)
+            if curr == s2:
+                res = True
+                return 
+            t1 = curr
+            for j in range(i+1,n):
+                dfs(j, t1)
+            curr += nums[i]
+            t2 = curr
+            if curr == s2:
+                res = True 
+                return 
+            for j in range(i+1,n):
+                dfs(j, t2)
+
+
+        res = False 
+        for i in range(n):
+            dfs(i, 0)
+        return res
+```
+
+[剑指 Offer II 102. 加减的目标值](https://leetcode.cn/problems/YaVDxD/)
+
+- DP：问题转化成在数组 \textit{nums}nums 中选取若干元素，使得这些元素之和等于 \textit{neg}neg，计算选取元素的方案数。相当于进行了裁剪。
+[参考](https://leetcode.cn/problems/YaVDxD/solution/jia-jian-de-mu-biao-zhi-by-leetcode-solu-be5t/)
+  
+```python
+
+```
+
+
+
+
+- DP：选择了结果为col列数，时间复杂度5%
+
+```python 
+class Solution:
+    def findTargetSumWays(self, nums: List[int], target: int) -> int:
+        if len(nums)==1:
+            return 1 if abs(nums[0])==abs(target) else 0
+        # dp[i][j]：以i为结尾的序列，能够构成结果为j的算式的数目
+        ss = sum([abs(i) for i in nums])
+        m1, m2 = -ss, ss
+        if target > m2 or target < m1:
+            return 0
+        n = len(nums)
+        dp = [[0] * (2 * m2 + 1) for _ in range(n)]
+        dp[0][nums[0]+m2] = 1
+        dp[0][-nums[0]+m2] = 2 if nums[0] == 0 else 1
+        for i in range(1,n):
+            curr = nums[i]
+            for j in range(m1,m2+1):
+                t1 = dp[i-1][j+m2-curr] if 0<=j-curr+m2<len(dp[0]) else 0
+                t2 = dp[i-1][j+m2+curr] if 0<=j+curr+m2<len(dp[0]) else 0
+                dp[i][j+m2] = t1 + t2
+        return dp[-1][target+m2]
+```
+
+[剑指 Offer II 103. 最少的硬币数目](https://leetcode.cn/problems/gaM7Ch/)
+
+```python
+class Solution:
+    def coinChange(self, coins: List[int], amount: int) -> int:
+        dp = [float('inf')] * (amount+1)
+        dp[0] = 0
+        for c in coins:
+            for i in range(c, amount+1):
+                dp[i] = min(dp[i], dp[i-c] + 1) # 同时初始化了单独选择c的情况
+        return dp[-1] if dp[-1]!=float('inf') else -1
+```
+
+[剑指 Offer II 104. 排列的数目](https://leetcode.cn/problems/D0F0SV/)
+
+```python
+class Solution:
+    def combinationSum4(self, nums: List[int], target: int) -> int:
+        dp = [0] * (target + 1)
+        dp[0] = 1
+        if len(nums)==1:
+            return 1 if nums[0]==target else 0
+        if min(nums)>target:
+            return 0
+        for i in range(target+1):
+            for num in nums:
+                if i >= num:
+                    dp[i] += dp[i-num] 
+        return dp[-1]
+```
+
+
 
 
 

@@ -708,10 +708,64 @@ class Solution:
         return longest
 ```
 
-[298. 二叉树最长连续序列](https://leetcode.cn/problems/binary-tree-longest-consecutive-sequence/)
+[298. 二叉树最长连续序列 - 128类似题](https://leetcode.cn/problems/binary-tree-longest-consecutive-sequence/)
 
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def longestConsecutive(self, root: TreeNode) -> int:
 
+        def dfs(curr, pre_val, curr_len):
+            nonlocal res 
+            if not curr:
+                res = max(res, curr_len)
+                return 
+            curr_val = curr.val 
+            if curr_val == pre_val + 1:
+                curr_len += 1
+                res = max(res, curr_len)
+            else:
+                curr_len = 1
+            if curr.left: dfs(curr.left, curr_val, curr_len)
+            if curr.right: dfs(curr.right, curr_val, curr_len)
+        
+        res = 1
+        dfs(root, root.val - 1, 0)
+        return res
+```
 
+[6. Z 字形变换](https://leetcode.cn/problems/zigzag-conversion/)
+
+```python
+class Solution:
+    def convert(self, s: str, numRows: int) -> str:
+        n = len(s)
+        if n <= numRows:
+            return s 
+        if numRows == 1:
+            return s
+        list_rows = [[] for _ in range(numRows)]
+        criteria = numRows - 1
+        x, b = divmod(n, criteria)
+        times = 1
+        for i in range(n):
+            if i % criteria == 0:
+                list_rows[(i//criteria%2)*criteria].append(s[i])
+                if i % (criteria * 2) == 0 and i > 0:
+                    times += 2
+            else:
+                if i < criteria * times:
+                    list_rows[numRows - (criteria * times - i) - 1].append(s[i])
+                else:
+                    list_rows[numRows - (i - criteria * times) - 1].append(s[i])
+            
+        return ''.join([''.join(i) for i in list_rows])
+```
 
 
 中等难度
@@ -743,12 +797,17 @@ class Solution:
 - 二叉树
     - [102. 二叉树的层序遍历](https://leetcode.cn/problems/binary-tree-level-order-traversal/)
     - [199. 二叉树的右视图(层序遍历的小改动)](https://leetcode.cn/problems/binary-tree-right-side-view/)
+    - [298. 二叉树最长连续序列 - 128类似题](https://leetcode.cn/problems/binary-tree-longest-consecutive-sequence/)
 
 - 矩阵
     - [54. 螺旋矩阵](https://leetcode.cn/problems/spiral-matrix/)
   
 - 其它
     - [128. 最长连续序列](https://leetcode.cn/problems/longest-consecutive-sequence/)
+    - [6. Z 字形变换](https://leetcode.cn/problems/zigzag-conversion/)
   
+
+
+
 
 

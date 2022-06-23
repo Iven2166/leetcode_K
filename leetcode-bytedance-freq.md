@@ -687,6 +687,30 @@ class Solution:
             return root
 ```
 
+[128. 最长连续序列](https://leetcode.cn/problems/longest-consecutive-sequence/)
+
+- 模拟法
+
+```python
+class Solution:
+    def longestConsecutive(self, nums: List[int]) -> int:
+        s = set(nums)
+        longest = 0
+
+        for i in s:
+            if i - 1 not in s:
+                length = 1
+                cur = i 
+                while cur + 1 in s:
+                    cur += 1
+                    length += 1
+                longest = max(longest, length)
+        return longest
+```
+
+[298. 二叉树最长连续序列](https://leetcode.cn/problems/binary-tree-longest-consecutive-sequence/)
+
+
 
 
 
@@ -723,3 +747,8 @@ class Solution:
 - 矩阵
     - [54. 螺旋矩阵](https://leetcode.cn/problems/spiral-matrix/)
   
+- 其它
+    - [128. 最长连续序列](https://leetcode.cn/problems/longest-consecutive-sequence/)
+  
+
+

@@ -1,5 +1,6 @@
 
-# 按照"出题指数"刷（https://leetcode.cn/company/bytedance/problemset/）
+# 按照"出题指数"刷
+https://leetcode.cn/company/bytedance/problemset/
 
 目录在最后
 
@@ -767,8 +768,135 @@ class Solution:
         return ''.join([''.join(i) for i in list_rows])
 ```
 
+[困难440. 字典序的第K小数字](https://leetcode.cn/company/bytedance/problemset/)
 
-中等难度
+```python
+class Solution:
+    def findKthNumber(self, n: int, k: int) -> int:
+        def get_steps(curr, n):
+            steps, first, last = 0, curr, curr 
+            while first <= n:
+                steps += min(last, n) - first + 1 # 第一轮first==last, 是加1
+                # 进入下一层
+                first *= 10
+                last = last * 10 + 9
+            return steps 
+
+        curr = 1
+        k -= 1 # 该第几个为数组顺序
+        while k:
+            steps = get_steps(curr, n)
+            if steps <= k:
+                # 说明在下一层不满足，但是得减掉
+                k -= steps
+                curr += 1 # 同一层往后加1
+            else:
+                # 进入下一层就可以解决
+                curr *= 10
+                k -= 1
+        return curr 
+```
+
+[困难 135. 分发糖果](https://leetcode.cn/problems/candy/)
+
+```python
+class Solution:
+    def candy(self, ratings: List[int]) -> int:
+        n = len(ratings)
+        left_list = [0] * n
+        for i in range(n):
+            if i > 0 and ratings[i] > ratings[i-1]:
+                left_list[i] = left_list[i-1] + 1
+            else:
+                left_list[i] = 1
+        res = 0
+        right = 1
+        for i in range(n-1, -1, -1):
+            if i < n - 1 and ratings[i] > ratings[i+1]:
+                right += 1
+            else:
+                right = 1
+            res += max(right, left_list[i])
+        return res 
+```
+
+- 无数组存储解法
+```python
+class Solution:
+    def candy(self, ratings: List[int]) -> int:
+        n = len(ratings)
+        ret = 1
+        inc, dec, pre = 1, 0, 1
+
+        for i in range(1, n):
+            if ratings[i] >= ratings[i - 1]:
+                dec = 0
+                pre = (1 if ratings[i] == ratings[i - 1] else pre + 1)
+                ret += pre
+                inc = pre
+            else:
+                dec += 1
+                if dec == inc:
+                    dec += 1
+                ret += dec
+                pre = 1
+        
+        return ret 
+# 作者：LeetCode-Solution
+# 链接：https://leetcode.cn/problems/candy/solution/fen-fa-tang-guo-by-leetcode-solution-f01p/
+# 来源：力扣（LeetCode）
+# 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+```
+
+[困难 124. 二叉树中的最大路径和](https://leetcode.cn/problems/binary-tree-maximum-path-sum/)
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def maxPathSum(self, root: Optional[TreeNode]) -> int:
+        res = - float('inf')
+        def dfs(curr):
+            nonlocal res 
+            # 返回包含该节点的左右子树更大的那颗
+            if not curr:
+                return 0 
+            # print(curr.val, curr.left, curr.right)
+            t1 = curr.val + dfs(curr.left)
+            t2 = curr.val + dfs(curr.right)
+            res = max(res, t1, t2, t1 + t2 - curr.val, curr.val)
+            return max(t1, t2, curr.val)
+        
+        dfs(root)
+        return res
+```
+
+[困难 32. 最长有效括号](https://leetcode.cn/problems/longest-valid-parentheses/)
+
+```python
+class Solution:
+    def longestValidParentheses(self, s: str) -> int:
+        n = len(s)
+        dp = [0] * n
+        res = 0
+        for i in range(1, n):
+            if s[i] == ')':
+                if s[i-1] == '(':
+                    dp[i] = dp[i-2] + 2 if i >= 2 else 2
+                elif i - dp[i-1] > 0 and s[i - dp[i-1] - 1] == '(':
+                    dp[i] = dp[i-1] + 2 + dp[i-dp[i-1]-2] if i-dp[i-1]-2>=0 else dp[i-1] + 2
+            res = max(res, dp[i])
+        
+        return res 
+```
+
+
+
+困难做标记，无标记则为中等难度或简单
 
 能够归纳到算法里的归纳到算法，不能则归纳到数据结构里。
 
@@ -780,6 +908,7 @@ class Solution:
     - [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
     - [5. 最长回文子串](https://leetcode.cn/problems/longest-palindromic-substring/)
     - [198. 打家劫舍](https://leetcode.cn/problems/house-robber/)
+    - [困难 32. 最长有效括号](https://leetcode.cn/problems/longest-valid-parentheses/)
     
 - 双指针
     - [15. 三数之和](https://leetcode.cn/problems/3sum/)
@@ -798,6 +927,8 @@ class Solution:
     - [102. 二叉树的层序遍历](https://leetcode.cn/problems/binary-tree-level-order-traversal/)
     - [199. 二叉树的右视图(层序遍历的小改动)](https://leetcode.cn/problems/binary-tree-right-side-view/)
     - [298. 二叉树最长连续序列 - 128类似题](https://leetcode.cn/problems/binary-tree-longest-consecutive-sequence/)
+    - [困难440. 字典序的第K小数字](https://leetcode.cn/company/bytedance/problemset/)
+    - [困难 124. 二叉树中的最大路径和](https://leetcode.cn/problems/binary-tree-maximum-path-sum/)
 
 - 矩阵
     - [54. 螺旋矩阵](https://leetcode.cn/problems/spiral-matrix/)
@@ -805,6 +936,7 @@ class Solution:
 - 其它
     - [128. 最长连续序列](https://leetcode.cn/problems/longest-consecutive-sequence/)
     - [6. Z 字形变换](https://leetcode.cn/problems/zigzag-conversion/)
+    - [困难 135. 分发糖果](https://leetcode.cn/problems/candy/) (涉及到单调区间)
   
 
 

@@ -894,6 +894,33 @@ class Solution:
         return res 
 ```
 
+[困难 10. 正则表达式匹配](https://leetcode.cn/problems/regular-expression-matching/)
+
+```python
+class Solution:
+    def isMatch(self, s: str, p: str) -> bool:
+        m, n = len(s), len(p)
+
+        def matches(i, j):
+            if i == 0: return False 
+            if p[j-1] == '.':
+                return True 
+            return s[i-1]==p[j-1]
+        
+        f = [[False] * (n+1) for _ in range(m+1)]
+        f[0][0] = True # 空字符串匹配空字符串
+        for i in range(m+1):
+            for j in range(1, n+1):
+                if p[j-1]=='*':
+                    f[i][j] |= f[i][j-2]
+                    if matches(i, j-1):
+                        f[i][j] |= f[i-1][j]
+                else:
+                    if matches(i, j):
+                        f[i][j] |= f[i-1][j-1]
+        
+        return f[m][n]
+```
 
 
 困难做标记，无标记则为中等难度或简单
@@ -909,6 +936,7 @@ class Solution:
     - [5. 最长回文子串](https://leetcode.cn/problems/longest-palindromic-substring/)
     - [198. 打家劫舍](https://leetcode.cn/problems/house-robber/)
     - [困难 32. 最长有效括号](https://leetcode.cn/problems/longest-valid-parentheses/)
+    - [困难 10. 正则表达式匹配](https://leetcode.cn/problems/regular-expression-matching/)
     
 - 双指针
     - [15. 三数之和](https://leetcode.cn/problems/3sum/)
